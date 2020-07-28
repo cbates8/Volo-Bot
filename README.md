@@ -32,3 +32,15 @@ EX: **'!set_activity playing D&D'** will set VoloBot's Discord status to *'Playi
 VoloBot will reply with a random meme from the "Memes" folder.
 
 ![meme example](https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/meme%20example.png)
+
+## Dependencies:
+
+### discord.py
+`pip install discord.py`
+
+### dotenv
+`pip install python-dotenv`
+
+### csv.py
+This module is supposed to be included with Python 3, but for some reason I couldn't get it to work natively.
+So, I downloaded it from [here](https://github.com/python/cpython/blob/3.8/Lib/csv.py)
