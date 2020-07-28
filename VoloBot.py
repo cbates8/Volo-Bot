@@ -85,12 +85,12 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 
 
 @bot.command(name='set_activity', help='Set the bot\'s activity')
-async def set_act(ctx, activity: str, activity_name: str):
-    if activity.lower() == 'playing':
+async def set_act(ctx, activity_type: str, activity_name: str):
+    if activity_type.lower() == 'playing':
         await bot.change_presence(activity=discord.Game(name=activity_name))
-    elif activity.lower() == 'listening':
+    elif activity_type.lower() == 'listening':
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=activity_name))
-    elif activity.lower() == 'watching':
+    elif activity_type.lower() == 'watching':
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name= activity_name))
     else:
         await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching")
