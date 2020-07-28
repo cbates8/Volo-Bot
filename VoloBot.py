@@ -1,4 +1,10 @@
-# bot.py
+#####################################
+#####################################
+# VoloBot.py
+# Author: Casey Bates
+# https://github.com/cbates8/Volo-Bot
+#####################################
+#####################################
 import os
 import random
 import csv
@@ -8,7 +14,7 @@ from dotenv import load_dotenv
 
 from discord.ext import commands
 
-description = '''A Dungeons and Dragons bot based on Volothamp Gedderm.
+description = '''A Dungeons and Dragons bot based on Volothamp Geddarm.
 
 Capable of rolling dice, checking critical hit tables, and more!'''
 
@@ -37,7 +43,7 @@ async def on_message(message):
 
     volo_quotes = [
         # Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
-        'Volothamp Gedderm at your service.',
+        'Volothamp Geddarm at your service.',
         'When beholders dream of beholders, that\'s when the trouble starts',
         'A beholder always has several backup plans ready. When dealing with one, I have three plans of my own; run, hide, and distract. Rival adventurers are always a good distraction, Rival beholders are the best one.',
         'Kobolds are a lot less cute when they learn how to cast fireballs.',
@@ -75,7 +81,7 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
     await ctx.send(response)
 
 
-@bot.command(name='roll_dice', help='Simulates rolling dice.')
+@bot.command(name='roll_dice', help='Rolls virtual dice.')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     dice = [
         str(random.choice(range(1, number_of_sides + 1)))
