@@ -9,7 +9,7 @@ VoloBot will roll the specified number of dice, each with the specified number o
 
 EX: '!roll_dice 3 6' will tell VoloBot to roll 3 6-Sided dice.
 
-![roll_dice example](/"Command Examples"/"roll_dice example")
+![roll_dice example](https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/roll_dice%20example.png)
 
 ### !crit <percentage> <damage_type>
 VoloBot will take a percentage (1-100) and a type of damage (slashing, bludgeoning, piercing, fire, cold, lightning, force, necrotic, radiant, acid, psychic, thunder), and reply with the corresponding effect from the critical hit table.
@@ -18,17 +18,17 @@ Note: Percentages and damage types based on 'Critical Hit Table.csv'. Using a di
 
 EX: '!crit 40 slashing' will send the corresponding effect of a 40% roll with a damage type of 'slashing'.
 
-![crit example](/"Command Examples"/"crit example")
+![crit example](https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/crit%20example.png)
 
 ### !set_activity <activity_type> <activity_name>
 Set VoloBot's Discord activity status, where <activity_type> is one of 'Playing', 'Listening', or 'Watching'.
 
 EX: '!set_activity playing D&D' will set VoloBot's Discord status to 'Playing D&D'.
 
-![set_activity example 1](/"Command Examples"/"set_activity example 1")
-![set_activity example 2](/"Command Examples"/"set_activity example 2")
+![set_activity example 1](https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/set_activity%20example%201.png)
+![set_activity example 2](https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/set_activity%20example%202.png)
 
 ### !meme
 VoloBot will reply with a random meme from the "Memes" folder.
 
-![meme example](/"Command Examples"/"meme example")
+![meme example](/"Command Examples"/https://github.com/cbates8/Volo-Bot/blob/master/Command%20Examples/meme%20example.png)
