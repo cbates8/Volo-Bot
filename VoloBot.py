@@ -72,13 +72,31 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
     # Default response that will only send if input percentage is not 1-100.
     response = 'Error: Invalid Percentage Roll'
 
+    #Abreviation support for damge types (spelling bludgeoning is hard!)
+    damage_type = damage_type.lower()
+    switcher = { #makeshift switch-case statement using dictionary mappings
+        'sl': 'slashing',
+        'bl': 'bludgeoning',
+        'pi': 'piercing',
+        'fi': 'fire',
+        'co': 'cold',
+        'li': 'lightning',
+        'fo': 'force',
+        'ne': 'necrotic',
+        'ra': 'radiant',
+        'ac': 'acid',
+        'ps': 'psychic',
+        'th': 'thunder'
+    } 
+    damage_type = switcher.get(damage_type, "Invalid Damage Type")
+
     #Opens 'Critical Hit Table.csv' and treats it as a dictionary. First row treated as keys, with following rows each being its own set of values for those keys
     with open('Critical Hit Table.csv', mode='r') as csvfile:
         csvreader = csv.DictReader(csvfile)
         line_count = 1
         for row in csvreader:
             if damage_type not in row.keys(): #Confirm that inputed damage_type is supported by the provided .csv. Otherwise sends error message containing valid types
-                response = f'Error: Invalid Damage Type. Supported types: {", ".join(row)}'
+                response = f'**Error:** Invalid Damage Type. \nSupported types: {"\n".join(row[1:])}'
                 break
             #print(f' line count: {line_count}, percentage: {percentage} ')
             if line_count == percentage: #line_count will equal percentage when 'row' iterator is the correct row in the critical hit table
@@ -89,7 +107,7 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
     await ctx.send(response)
 
 # Simulates rolliung of dice
-@bot.command(name='roll_dice', help='Rolls virtual dice.')
+@bot.command(name='roll_dice', help='Roll virtual dice')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     #Chooses a random int between 1 and the given number of sides
     #Repeats as many times as number_of_dice
@@ -112,7 +130,7 @@ async def set_act(ctx, activity_type: str, activity_name: str):
         await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching") #Sends a list of supported activities if one isn't given
 
 #Sends a meme to the chat
-@bot.command(name='meme', help='Dank May May')
+@bot.command(name='meme', help='Dank Me Me')
 async def send_meme(ctx):
     random_meme = random.choice(os.listdir("Memes")) #choose a random file from the "Memes" folder
     while random_meme == ".DS_Store": #If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
