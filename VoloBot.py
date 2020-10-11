@@ -88,7 +88,8 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
         'ps': 'psychic',
         'th': 'thunder'
     } 
-    damage_type = switcher.get(damage_type, "Invalid Damage Type")
+    if (len(damage_type) == 2):
+        damage_type = switcher.get(damage_type, "Invalid")
 
     #Opens 'Critical Hit Table.csv' and treats it as a dictionary. First row treated as keys, with following rows each being its own set of values for those keys
     with open('Critical Hit Table.csv', mode='r') as csvfile:
@@ -96,7 +97,7 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
         line_count = 1
         for row in csvreader:
             if damage_type not in row.keys(): #Confirm that inputed damage_type is supported by the provided .csv. Otherwise sends error message containing valid types
-                response = f'**Error:** Invalid Damage Type. \nSupported types: {"\n".join(row[1:])}'
+                response = f'**Error:** Invalid Damage Type. {chr(10)}Supported types: {chr(10)}{chr(10).join(row)}' #using chr(10) as newline, because f-string doesn't support \n
                 break
             #print(f' line count: {line_count}, percentage: {percentage} ')
             if line_count == percentage: #line_count will equal percentage when 'row' iterator is the correct row in the critical hit table
