@@ -8,6 +8,7 @@
 import os
 import random
 import csv
+import time
 
 import discord
 from dotenv import load_dotenv
@@ -139,5 +140,20 @@ async def send_meme(ctx):
     while random_meme == ".DS_Store": #If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
         random_meme = random.choice(os.listdir("Memes"))
     await ctx.send(file=discord.File(f"Memes/{random_meme}"))
+
+#Responds to a ping request with the estimated ping of the sender
+@bot.command(name='ping', help="Ping Volobot")
+async def ping_response(ctx):
+    embed = discord.Embed(title="Pong!")
+    m = await ctx.send(embed=embed)
+    ping = (m.created_at-ctx.message.created_at).total_seconds() * 100 #Calculate the time difference between ping request and pong response
+    embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
+    await m.edit(embed=embed) #edit response to include calculated ping (ms)
+
+#Shuts down the bot
+@bot.command(name='bye', help="Shut down Volobot")
+async def shutdown(ctx):
+    await ctx.send("Goodbye!")
+    quit() #terminates the script
 
 bot.run(TOKEN)
