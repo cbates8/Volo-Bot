@@ -173,5 +173,4 @@ async def on_command_error(ctx, error):
     embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
     await ctx.send(embed=embed)
 
-
 bot.run(TOKEN)
