@@ -150,10 +150,28 @@ async def ping_response(ctx):
     embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
     await m.edit(embed=embed) #edit response to include calculated ping (ms)
 
+'''
 #Shuts down the bot
 @bot.command(name='bye', help="Shut down Volobot")
 async def shutdown(ctx):
     await ctx.send("Goodbye!")
     quit() #terminates the script
+'''
+
+#Send error messages to context rather than print to console
+@bot.event
+async def on_command_error(ctx, error):
+    embed = discord.Embed(title="I've encountered an error:")
+    if isinstance(error, commands.BadArgument):
+        embed.add_field(name="Bad Argument", value="An argument was passed as an incorrect type.", inline=False)
+    elif isinstance(error, commands.MissingRequiredArgument):
+        embed.add_field(name="Missing Required Argument", value="Send '!help <command>' to learn more about a command.", inline=False)
+    elif isinstance(error, commands.TooManyArguments):
+        embed.add_field(name="Too Many Arguments", value="Send '!help <command>' to learn more about a command.", inline=False)
+    else:
+        embed.add_field(name="Unknown Error", value='Yikes!', inline=False)
+    embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
+    await ctx.send(embed=embed)
+
 
 bot.run(TOKEN)
