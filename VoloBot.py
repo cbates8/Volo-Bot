@@ -7,25 +7,25 @@
 #####################################
 import os
 import random
-import csv
-import time
-
 import discord
+import traceback
+from csv import DictReader
 from dotenv import load_dotenv
 from discord.ext import commands
-
-description = '''A Dungeons and Dragons bot based on Volothamp Geddarm.
-
-Capable of rolling dice, checking critical hit tables, and more!'''
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN') #gets DISCORD_TOKEN from token specified in the .env file
 GUILD = os.getenv('DISCORD_GUILD') #gets DISCORD_GUILD from guild ID specified in the .env file
 
+description = '''A Dungeons and Dragons bot based on Volothamp Geddarm.
+
+Capable of rolling dice, checking critical hit tables, and more!'''
+
 #command_prefix= defines the bot's command prefix (string)
 #description= will add a description to the !help menu (string)
 bot = commands.Bot(command_prefix='!', description=description)
 
+###################
 @bot.event
 async def on_ready():
     """
@@ -43,6 +43,7 @@ async def on_ready():
     #await bot.change_presence(activity=discord.CustomActivity(name="Reading \'Volo\'s Guide to Monsters\'", emoji=None, type=discord.ActivityType.custom))
     await bot.change_presence(activity=discord.Game(name="Dungeons and Dragons"))
 
+###################
 @bot.event
 async def on_message(message):
     """
@@ -78,6 +79,7 @@ async def on_message(message):
         await message.channel.send(response)
     await bot.process_commands(message) #Without this line, the following commands will not work, and only this on_message event will run
 
+###################
 @bot.command(name='crit', help='Search the critical hit table')
 async def crit_roll(ctx, percentage: int, damage_type: str):
     """
@@ -88,55 +90,72 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
 
-    percentage : int
+    percentage : `int`
         Percentage representing critical hit severity
 
-    damage_type : str
+    damage_type : `str`
         Type of damage being inflicted
     """
 
     # Default response that will only send if input percentage is not 1-100.
-    response = 'Error: Invalid Percentage Roll'
-
+    
     ### TODO: This is disgusting. Implement better way of implementing shortcuts for damage types
     #Abreviation support for damge types (spelling bludgeoning is hard!)
     damage_type = damage_type.lower()
-    switcher = { #makeshift switch-case statement using dictionary mappings
-        'sl': 'slashing',
-        'bl': 'bludgeoning',
-        'pi': 'piercing',
-        'fi': 'fire',
-        'co': 'cold',
-        'li': 'lightning',
-        'fo': 'force',
-        'ne': 'necrotic',
-        'ra': 'radiant',
-        'ac': 'acid',
-        'ps': 'psychic',
-        'th': 'thunder'
-    } 
-    if (len(damage_type) == 2):
-        damage_type = switcher.get(damage_type, "Invalid")
-
+    # switcher = { #makeshift switch-case statement using dictionary mappings
+    #     'sl': 'slashing',
+    #     'bl': 'bludgeoning',
+    #     'pi': 'piercing',
+    #     'fi': 'fire',
+    #     'co': 'cold',
+    #     'li': 'lightning',
+    #     'fo': 'force',
+    #     'ne': 'necrotic',
+    #     'ra': 'radiant',
+    #     'ac': 'acid',
+    #     'ps': 'psychic',
+    #     'th': 'thunder'
+    # } 
+    # if (len(damage_type) == 2):
+    #     damage_type = switcher.get(damage_type, "Invalid")
+    
     ### TODO: Re-evaluate this section to make sure that parsing the csv is as efficient as possible
     #Opens 'Critical Hit Table.csv' and treats it as a dictionary. First row treated as keys, with following rows each being its own set of values for those keys
+    response = 'This is super broken'
+   
     with open('Critical Hit Table.csv', mode='r') as csvfile:
-        csvreader = csv.DictReader(csvfile)
+        csvreader = DictReader(csvfile)
         line_count = 1
-        for row in csvreader:
-            if damage_type not in row.keys(): #Confirm that inputed damage_type is supported by the provided .csv. Otherwise sends error message containing valid types
-                types = " ".join(row)
-                types = types.split()[1:]
-                response = f'**Error:** Invalid Damage Type {chr(10)}Supported types: {chr(10)}{chr(10).join(types)}' #using chr(10) as newline, because f-string doesn't support \n
+        #print(csvreader.fieldnames)
+        
+        valid = False
+        for header in csvreader.fieldnames[1:]:
+            # print(header, header[:2])
+            if damage_type == header or damage_type == header[:2]:
+                damage_type = header
+                valid = True
                 break
-            #print(f' line count: {line_count}, percentage: {percentage} ')
-            if line_count == percentage: #line_count will equal percentage when 'row' iterator is the correct row in the critical hit table
-                response = row.get(damage_type.lower()) #Replies with the correspoinding effect. Uses 'row' as the dictionary identifier and finds the value assigned to key 'damage_type'
-                break
-            else: # Incrementing line count effectivly moves the search one row down the table
-                line_count += 1
+        
+        #if percentage not in range(1, 101):
+        response = 'Error: Invalid Percentage Roll\nMust be value from 1-100'
+        if not valid:
+            response = f'**Error:** Invalid Damage Type {chr(10)}Supported types: ```{chr(10)}{chr(10).join(csvreader.fieldnames[1:])}```' #using chr(10) as newline, because f-string doesn't support \n
+        elif percentage in range(1, 101):
+            for row in csvreader:
+                # if damage_type not in row.keys(): #Confirm that inputed damage_type is supported by the provided .csv. Otherwise sends error message containing valid types
+                #     types = " ".join(row)
+                #     types = types.split()[1:]
+                #     response = f'**Error:** Invalid Damage Type {chr(10)}Supported types: {chr(10)}{chr(10).join(types)}' #using chr(10) as newline, because f-string doesn't support \n
+                #     break
+                #print(f' line count: {line_count}, percentage: {percentage} ')
+                if line_count == percentage: #line_count will equal percentage when 'row' iterator is the correct row in the critical hit table
+                    response = row.get(damage_type.lower()) #Replies with the correspoinding effect. Uses 'row' as the dictionary identifier and finds the value assigned to key 'damage_type'
+                    break
+                else: 
+                    line_count += 1 # Incrementing line count effectivly moves the search one row down the table
     await ctx.send(response)
 
+###################
 @bot.command(name='roll_dice', help='Roll virtual dice')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     """
@@ -147,10 +166,10 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
 
-    number_of_dice : int
+    number_of_dice : `int`
         The number of dice to be rolled
 
-    number_of_sides : int
+    number_of_sides : `int`
         How many sides each rolled die should have
     """    
     #Chooses a random int between 1 and the given number of sides
@@ -161,6 +180,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     ]
     await ctx.send(', '.join(dice))
 
+###################
 @bot.command(name='set_activity', help='Set the bot\'s activity')
 async def set_act(ctx, activity_type: str, activity_name: str):
     """
@@ -171,10 +191,10 @@ async def set_act(ctx, activity_type: str, activity_name: str):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
 
-    activity_type : str
+    activity_type : `str`
         Type of activity to be displayed (e.g. "Playing", "Listening", "Watching")
 
-    activity_name : str
+    activity_name : `str`
         Description of activity to be displayed (e.g. "Playing [activity_name]")
     """    
 
@@ -187,6 +207,7 @@ async def set_act(ctx, activity_type: str, activity_name: str):
     else:
         await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching") #Sends a list of supported activities if one isn't given
 
+###################
 @bot.command(name='meme', help='Dank Me Me')
 async def send_meme(ctx):
     """
@@ -203,6 +224,7 @@ async def send_meme(ctx):
         random_meme = random.choice(os.listdir("Memes"))
     await ctx.send(file=discord.File(f"Memes/{random_meme}"))
 
+###################
 @bot.command(name='ping', help="Ping Volobot")
 async def ping_response(ctx):
     """
@@ -213,13 +235,14 @@ async def ping_response(ctx):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
     """
-
+    raise Exception
     embed = discord.Embed(title="Pong!")
     m = await ctx.send(embed=embed)
     ping = (m.created_at-ctx.message.created_at).total_seconds() * 100 #Calculate the time difference between ping request and pong response
     embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
     await m.edit(embed=embed) #edit response to include calculated ping (ms)
 
+###################
 @bot.event
 async def on_command_error(ctx, error):
     """
@@ -233,7 +256,7 @@ async def on_command_error(ctx, error):
     error : `UserInputError`
         Exception to be sent to the channel context by the bot
     """
-    
+
     embed = discord.Embed(title="I've encountered an error:")
     if isinstance(error, commands.BadArgument):
         embed.add_field(name="Bad Argument", value="An argument was passed as an incorrect type.", inline=False)
@@ -244,6 +267,7 @@ async def on_command_error(ctx, error):
     else:
         embed.add_field(name="Unknown Error", value='Yikes!', inline=False)
     embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
+    print(f'Error: {error}\n-----\nTraceback: {traceback.print_exc}\n\n') ##TODO: Implement correct traceback
     await ctx.send(embed=embed)
 
 '''
