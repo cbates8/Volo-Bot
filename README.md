@@ -36,11 +36,10 @@ VoloBot will reply with a random meme from the "Memes" folder.
 ## Dependencies:
 
 ### discord.py
-`pip install discord.py`
+`pip3 install discord.py`
 
 ### dotenv
-`pip install python-dotenv`
+`pip3 install python-dotenv`
 
 ### csv.py
-This module is supposed to be included with Python 3.x, but for some reason I couldn't get it to work natively.
-So, I downloaded it from [here](https://github.com/python/cpython/blob/3.8/Lib/csv.py).
+This module is included with Python 3.9. For versions of Python 3 below 3.9, you can download the module [here](https://github.com/python/cpython/blob/3.8/Lib/csv.py).
