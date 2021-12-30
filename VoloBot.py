@@ -26,6 +26,7 @@ Capable of rolling dice, checking critical hit tables, and more!'''
 bot = commands.Bot(command_prefix='!', description=description)
 
 ###################
+###################
 @bot.event
 async def on_ready():
     """
@@ -44,6 +45,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Dungeons and Dragons"))
 
 ###################
+###################
 @bot.event
 async def on_message(message):
     """
@@ -59,7 +61,7 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    ### TODO: Import quotes from seperate file instead of hard-coded list
+    ### TODO: Import quotes from seperate file instead of hard-coded list?
     volo_quotes = [
         # Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
         'Volothamp Geddarm at your service.',
@@ -80,10 +82,11 @@ async def on_message(message):
     await bot.process_commands(message) #Without this line, the following commands will not work, and only this on_message event will run
 
 ###################
+###################
 @bot.command(name='crit', help='Search the critical hit table')
 async def crit_roll(ctx, percentage: int, damage_type: str):
     """
-    Search the provided .csv of the crititcal hit table using the user's inputed percentage and damage type. Reply with the resulting effect
+    Search the provided csv of the crititcal hit table using the user's inputed percentage and damage type. Reply with the resulting effect
 
     Parameters
     ----------
@@ -96,52 +99,28 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
     damage_type : `str`
         Type of damage being inflicted
     """
-
-    # Default response that will only send if input percentage is not 1-100.
-    
-    ### TODO: This is disgusting. Implement better way of implementing shortcuts for damage types
-    #Abreviation support for damge types (spelling bludgeoning is hard!)
     damage_type = damage_type.lower()
-    # switcher = { #makeshift switch-case statement using dictionary mappings
-    #     'sl': 'slashing',
-    #     'bl': 'bludgeoning',
-    #     'pi': 'piercing',
-    #     'fi': 'fire',
-    #     'co': 'cold',
-    #     'li': 'lightning',
-    #     'fo': 'force',
-    #     'ne': 'necrotic',
-    #     'ra': 'radiant',
-    #     'ac': 'acid',
-    #     'ps': 'psychic',
-    #     'th': 'thunder'
-    # } 
-    # if (len(damage_type) == 2):
-    #     damage_type = switcher.get(damage_type, "Invalid")
-    
-    ### TODO: Re-evaluate this section to make sure that parsing the csv is as efficient as possible
+
     #Opens 'Critical Hit Table.csv' and treats it as a dictionary. First row treated as keys, with following rows each being its own set of values for those keys
-    response = 'This is super broken'
-   
     with open('Critical Hit Table.csv', mode='r') as csvfile:
         csvreader = DictReader(csvfile)
         line_count = 1
-        #print(csvreader.fieldnames)
         
-        valid = False
+        valid_response = False
         for header in csvreader.fieldnames[1:]:
-            # print(header, header[:2])
-            if damage_type == header or damage_type == header[:2]:
+            if damage_type == header or damage_type == header[:2]: # Includes abreviation support for damge types (spelling bludgeoning is hard!)
                 damage_type = header
-                valid = True
+                valid_response = True
                 break
         
         #if percentage not in range(1, 101):
-        response = 'Error: Invalid Percentage Roll\nMust be value from 1-100'
-        if not valid:
+        response = 'Error: Invalid Percentage Roll\nMust be value from 1-100' # Default response that will only send if input percentage is not 1-100.
+        if not valid_response:
             response = f'**Error:** Invalid Damage Type {chr(10)}Supported types: ```{chr(10)}{chr(10).join(csvreader.fieldnames[1:])}```' #using chr(10) as newline, because f-string doesn't support \n
         elif percentage in range(1, 101):
             for row in csvreader:
+                ### TODO: Re-evaluate this section to make sure that parsing the csv is as efficient as possible
+
                 # if damage_type not in row.keys(): #Confirm that inputed damage_type is supported by the provided .csv. Otherwise sends error message containing valid types
                 #     types = " ".join(row)
                 #     types = types.split()[1:]
@@ -149,12 +128,13 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
                 #     break
                 #print(f' line count: {line_count}, percentage: {percentage} ')
                 if line_count == percentage: #line_count will equal percentage when 'row' iterator is the correct row in the critical hit table
-                    response = row.get(damage_type.lower()) #Replies with the correspoinding effect. Uses 'row' as the dictionary identifier and finds the value assigned to key 'damage_type'
+                    response = row.get(damage_type.lower()) #Replies with the correspoinding damage effect. Uses 'row' as the dictionary identifier and finds the value assigned to key 'damage_type'
                     break
                 else: 
                     line_count += 1 # Incrementing line count effectivly moves the search one row down the table
     await ctx.send(response)
 
+###################
 ###################
 @bot.command(name='roll_dice', help='Roll virtual dice')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
@@ -180,6 +160,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     ]
     await ctx.send(', '.join(dice))
 
+###################
 ###################
 @bot.command(name='set_activity', help='Set the bot\'s activity')
 async def set_act(ctx, activity_type: str, activity_name: str):
@@ -208,6 +189,7 @@ async def set_act(ctx, activity_type: str, activity_name: str):
         await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching") #Sends a list of supported activities if one isn't given
 
 ###################
+###################
 @bot.command(name='meme', help='Dank Me Me')
 async def send_meme(ctx):
     """
@@ -224,6 +206,7 @@ async def send_meme(ctx):
         random_meme = random.choice(os.listdir("Memes"))
     await ctx.send(file=discord.File(f"Memes/{random_meme}"))
 
+###################
 ###################
 @bot.command(name='ping', help="Ping Volobot")
 async def ping_response(ctx):
@@ -242,6 +225,7 @@ async def ping_response(ctx):
     embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
     await m.edit(embed=embed) #edit response to include calculated ping (ms)
 
+###################
 ###################
 @bot.event
 async def on_command_error(ctx, error):
@@ -265,7 +249,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.TooManyArguments):
         embed.add_field(name="Too Many Arguments", value="Send '!help <command>' to learn more about a command.", inline=False)
     else:
-        embed.add_field(name="Unknown Error", value='Yikes!', inline=False)
+        embed.add_field(name="Exception Thrown", value='Yikes!', inline=False)
     embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
     print(f'Error: {error}\n-----\nTraceback: {traceback.print_exc}\n\n') ##TODO: Implement correct traceback
     await ctx.send(embed=embed)
