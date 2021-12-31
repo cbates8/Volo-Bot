@@ -5,10 +5,13 @@
 # https://github.com/cbates8/Volo-Bot
 #####################################
 #####################################
+from json.decoder import JSONDecoder
 import os
 import random
 import discord
 import traceback
+import json
+from pprint import pformat
 from csv import DictReader
 from dotenv import load_dotenv
 from discord.ext import commands
@@ -136,6 +139,35 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
 
 ###################
 ###################
+@bot.command(name='spell', help='Search spell definitions')
+async def spell_lookup(ctx, spell_name: str):
+    '''
+    Search for a spell and return its description
+
+    Parameters
+    ----------
+    ctx : 'discord.ext.commands.Context'
+        Message context object from Discord
+
+    spell_name : str    
+        The name of the spell to search for
+    '''
+
+    spell = spell_name.lower()
+
+    with open('spells.json', mode='r', encoding='utf8') as jsonfile:
+        spells = json.load(jsonfile)
+
+    response = f"Can't find spell {spell}"
+    for s in spells:
+        if spell == s.lower():
+            response = f"**{s}**\n {json.dumps(spells[s], indent=4)}"
+    
+    await ctx.send(response)
+
+
+###################
+###################
 @bot.command(name='roll_dice', help='Roll virtual dice')
 async def roll(ctx, number_of_dice: int, number_of_sides: int):
     """
@@ -218,7 +250,6 @@ async def ping_response(ctx):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
     """
-    raise Exception
     embed = discord.Embed(title="Pong!")
     m = await ctx.send(embed=embed)
     ping = (m.created_at-ctx.message.created_at).total_seconds() * 100 #Calculate the time difference between ping request and pong response
