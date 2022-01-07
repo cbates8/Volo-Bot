@@ -5,16 +5,19 @@
 # https://github.com/cbates8/Volo-Bot
 #####################################
 #####################################
-from json.decoder import JSONDecoder
 import os
 import random
 import discord
 import traceback
 import json
-from pprint import pformat
+import helpers
 from csv import DictReader
 from dotenv import load_dotenv
 from discord.ext import commands
+
+#################
+### BOT SETUP ###
+#################
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN') #gets DISCORD_TOKEN from token specified in the .env file
@@ -28,8 +31,11 @@ Capable of rolling dice, checking critical hit tables, and more!'''
 #description= will add a description to the !help menu (string)
 bot = commands.Bot(command_prefix='!', description=description)
 
-###################
-###################
+
+##################
+### BOT EVENTS ###
+##################
+
 @bot.event
 async def on_ready():
     """
@@ -86,6 +92,39 @@ async def on_message(message):
 
 ###################
 ###################
+@bot.event
+async def on_command_error(ctx, error):
+    """
+    Send error messages to context rather than print to console
+
+    Parameters
+    ----------
+    ctx : `discord.ext.commands.Context`
+        Message context object from Discord
+
+    error : `UserInputError`
+        Exception to be sent to the channel context by the bot
+    """
+
+    embed = discord.Embed(title="I've encountered an error:")
+    if isinstance(error, commands.BadArgument):
+        embed.add_field(name="Bad Argument", value="An argument was passed as an incorrect type.", inline=False)
+    elif isinstance(error, commands.MissingRequiredArgument):
+        embed.add_field(name="Missing Required Argument", value="Send '!help <command>' to learn more about a command.", inline=False)
+    elif isinstance(error, commands.TooManyArguments):
+        embed.add_field(name="Too Many Arguments", value="Send '!help <command>' to learn more about a command.", inline=False)
+    else:
+        embed.add_field(name="Exception Thrown", value='Yikes!', inline=False)
+    embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
+    print(f'Error: {error}\n-----\nTraceback: {traceback.print_exc}\n\n') ##TODO: Implement correct traceback
+    await ctx.send(embed=embed)
+
+
+
+####################
+### BOT COMMANDS ###
+####################
+
 @bot.command(name='crit', help='Search the critical hit table')
 async def crit_roll(ctx, percentage: int, damage_type: str):
     """
@@ -158,12 +197,11 @@ async def spell_lookup(ctx, spell_name: str):
     with open('spells.json', mode='r', encoding='utf8') as jsonfile:
         spells = json.load(jsonfile)
 
-    response = f"Can't find spell {spell}"
+    embed = discord.Embed(title=f"Can't find spell '{spell}'")
     for s in spells:
         if spell == s.lower():
-            response = f"**{s}**\n {json.dumps(spells[s], indent=4)}"
-    
-    await ctx.send(response)
+            embed = helpers.generate_spell_embed(s, spells[s])
+    m = await ctx.send(embed=embed)
 
 
 ###################
@@ -255,42 +293,10 @@ async def ping_response(ctx):
     ping = (m.created_at-ctx.message.created_at).total_seconds() * 100 #Calculate the time difference between ping request and pong response
     embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
     await m.edit(embed=embed) #edit response to include calculated ping (ms)
+    
 
-###################
-###################
-@bot.event
-async def on_command_error(ctx, error):
-    """
-    Send error messages to context rather than print to console
-
-    Parameters
-    ----------
-    ctx : `discord.ext.commands.Context`
-        Message context object from Discord
-
-    error : `UserInputError`
-        Exception to be sent to the channel context by the bot
-    """
-
-    embed = discord.Embed(title="I've encountered an error:")
-    if isinstance(error, commands.BadArgument):
-        embed.add_field(name="Bad Argument", value="An argument was passed as an incorrect type.", inline=False)
-    elif isinstance(error, commands.MissingRequiredArgument):
-        embed.add_field(name="Missing Required Argument", value="Send '!help <command>' to learn more about a command.", inline=False)
-    elif isinstance(error, commands.TooManyArguments):
-        embed.add_field(name="Too Many Arguments", value="Send '!help <command>' to learn more about a command.", inline=False)
-    else:
-        embed.add_field(name="Exception Thrown", value='Yikes!', inline=False)
-    embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
-    print(f'Error: {error}\n-----\nTraceback: {traceback.print_exc}\n\n') ##TODO: Implement correct traceback
-    await ctx.send(embed=embed)
-
-'''
-#Shuts down the bot
-@bot.command(name='bye', help="Shut down Volobot")
-async def shutdown(ctx):
-    await ctx.send("Goodbye!")
-    quit() #terminates the script
-'''
+###############
+### RUN BOT ###
+###############
 
 bot.run(TOKEN)
