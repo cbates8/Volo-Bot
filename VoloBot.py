@@ -188,7 +188,7 @@ async def spell_lookup(ctx, spell_name: str):
     ctx : 'discord.ext.commands.Context'
         Message context object from Discord
 
-    spell_name : str    
+    spell_name : `str`   
         The name of the spell to search for
     '''
 
@@ -200,8 +200,8 @@ async def spell_lookup(ctx, spell_name: str):
     embed = discord.Embed(title=f"Can't find spell '{spell}'")
     for s in spells:
         if spell == s.lower():
-            embed = helpers.generate_spell_embed(s, spells[s])
-    m = await ctx.send(embed=embed)
+            embed = helpers.dict_to_embed(s, spells[s])
+    await ctx.send(embed=embed)
 
 
 ###################
@@ -293,7 +293,102 @@ async def ping_response(ctx):
     ping = (m.created_at-ctx.message.created_at).total_seconds() * 100 #Calculate the time difference between ping request and pong response
     embed.add_field(name=':ping_pong:', value=f'{int(ping)} ms') #Add calculated ping to the embed
     await m.edit(embed=embed) #edit response to include calculated ping (ms)
+
+###################
+###################
+@bot.command(name='inventory', help="Check the party's inventory")
+async def check_inventory(ctx, item: str=None):
+    '''
+    Displays the contents of inventory.json
+
+    Parameters
+    ----------
+    ctx : `discord.ext.commands.Context`
+        Message context object from Discord
+
+    item : `str`, optional
+        The name of the inventory item to list. If ommitted, entire inventory will be listed.
+    '''
+    with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
+        inventory = json.load(jsonfile)
+
+    if(item == None):
+        embed = helpers.dict_to_embed("Inventory", inventory)
+    else:
+        embed = helpers.dict_to_embed(item, inventory[item])
+
+    await ctx.send(embed=embed)
+
+###################
+###################
+@bot.command(name="store", help="store items in the party's inventory")
+async def store_inventory(ctx, item: str, desc: str=None, quant: int=1):
+    '''
+    Store items in inventory.json
+
+    Parameters
+    ----------
+    ctx : `discord.ext.commands.Context`
+        Message context object from Discord
+
+    item : `str`
+        The name of the item to store
+
+    desc : `str`, optional
+        A description of the stored item, by default None
+
+    quant : `int`, optional
+        The quantity of the item to store, by default 1
+    '''
+    with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
+        inventory = json.load(jsonfile)
     
+    if item not in inventory.keys():
+        inventory[item] = {"description": desc, "quantity": quant}
+    else:
+        inventory[item]["quantity"] += quant
+        if desc != None:
+            inventory[item]["description"] = desc
+    
+    with open('inventory.json', mode='w') as jsonfile:
+        jsonfile.write(json.dumps(inventory, indent=4))
+
+    response = f"Added {quant} {item} to your inventory."
+
+    await ctx.send(response)
+
+###################
+###################
+@bot.command(name="remove", help="remove items from the party's inventory")
+async def remove_inventory(ctx, item: str, quant: int=None):
+    '''
+    Remove items from inventory.json
+
+    Parameters
+    ----------
+    ctx : `discord.ext.commands.Context`
+        Message context object from Discord
+
+    item : `str`
+        The name of the item to remove
+
+    quant : `int`, optional
+        The quantity of items to remove, by default all
+    '''
+    with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
+        inventory = json.load(jsonfile)
+    
+    if quant == None or quant >= inventory[item]["quantity"]:
+        del inventory[item]
+    else:
+        inventory[item]["quantity"] -= quant
+    
+    with open('inventory.json', mode='w') as jsonfile:
+        jsonfile.write(json.dumps(inventory, indent=4))
+
+    response = f"Removed {'all' if quant == None else quant} {item} from your inventory."
+
+    await ctx.send(response)
 
 ###############
 ### RUN BOT ###

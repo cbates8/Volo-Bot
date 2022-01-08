@@ -3,12 +3,35 @@ import discord
 ########################
 ### HELPER FUNCTIONS ###
 ########################
-def generate_spell_embed(sName, jObject):
-    embed = discord.Embed(title=sName)
-    for o in jObject:
+def dict_to_embed(title, d):
+    '''
+    Convert a Python Dictionary to a Discord Embed
+
+    Parameters
+    ----------
+    title : `str`
+        the title of the Discord Embed
+
+    d : `dict`
+        Dictionary object
+
+    Returns
+    -------
+    `discord.Embed`
+        Discord Embed object
+    '''
+    
+    embed = discord.Embed(title=title)
+    for o in d:
         if o == "description":
-            embed.description=jObject[o]
+            embed.description=d[o]
         else:
-            embed.add_field(name=f"{o}", value=f'{jObject[o]}', inline=False)
+            if isinstance(d[o], dict):
+                val = ""
+                for key in d[o]:
+                    val += f"{key}: {d[o][key]}\n\n"
+            else:
+                val = d[o]
+            embed.add_field(name=f"{o}", value=f'{val}', inline=False)
         
     return embed
