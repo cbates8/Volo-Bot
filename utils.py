@@ -1,16 +1,16 @@
-import discord
+from discord import Embed
 
 ########################
 ### HELPER FUNCTIONS ###
 ########################
-def dict_to_embed(title, d):
+def dict_to_embed(title: str, d: dict)  -> Embed:
     '''
     Convert a Python Dictionary to a Discord Embed
 
     Parameters
     ----------
     title : `str`
-        the title of the Discord Embed
+        title of the Discord Embed
 
     d : `dict`
         Dictionary object
@@ -21,7 +21,7 @@ def dict_to_embed(title, d):
         Discord Embed object
     '''
     
-    embed = discord.Embed(title=title)
+    embed = Embed(title=title)
     for o in d:
         if o == "description":
             embed.description=d[o]

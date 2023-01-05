@@ -5,23 +5,23 @@
 # https://github.com/cbates8/Volo-Bot
 #####################################
 #####################################
-import os
-import random
+import utils
 import discord
-import traceback
-import json
-import helpers
+from discord.ext import commands
+from os import getenv, listdir
+from random import choice
+from traceback import print_exc
+from json import load, dumps
 from csv import DictReader
 from dotenv import load_dotenv
-from discord.ext import commands
 
 #################
 ### BOT SETUP ###
 #################
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN') #gets DISCORD_TOKEN from token specified in the .env file
-GUILD = os.getenv('DISCORD_GUILD') #gets DISCORD_GUILD from guild ID specified in the .env file
+TOKEN = getenv('DISCORD_TOKEN') #gets DISCORD_TOKEN from token specified in the .env file
+GUILD = getenv('DISCORD_GUILD') #gets DISCORD_GUILD from guild ID specified in the .env file
 
 description = '''A Dungeons and Dragons bot based on Volothamp Geddarm.
 
@@ -56,7 +56,7 @@ async def on_ready():
 ###################
 ###################
 @bot.event
-async def on_message(message):
+async def on_message(message:  discord.Message):
     """
     When seeing a message containing 'volo', bot will reply with a random quote from the list stored in volo_quotes
 
@@ -86,14 +86,14 @@ async def on_message(message):
 
     #If any version of the string 'volo' appears in a message, choose a random quote and send it to the channel
     if 'volo' in message.content.lower():
-        response = random.choice(volo_quotes)
+        response = choice(volo_quotes)
         await message.channel.send(response)
     await bot.process_commands(message) #Without this line, the following commands will not work, and only this on_message event will run
 
 ###################
 ###################
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx: commands.Context, error: commands.UserInputError):
     """
     Send error messages to context rather than print to console
 
@@ -102,7 +102,7 @@ async def on_command_error(ctx, error):
     ctx : `discord.ext.commands.Context`
         Message context object from Discord
 
-    error : `UserInputError`
+    error : `discord.ext.commands.UserInputError`
         Exception to be sent to the channel context by the bot
     """
 
@@ -116,7 +116,7 @@ async def on_command_error(ctx, error):
     else:
         embed.add_field(name="Exception Thrown", value='Yikes!', inline=False)
     embed.add_field(name="Error Text:", value=f'`{error}`', inline=False)
-    print(f'Error: {error}\n-----\nTraceback: {traceback.print_exc}\n\n') ##TODO: Implement correct traceback
+    print(f'Error: {error}\n-----\nTraceback: {print_exc}\n\n') ##TODO: Implement correct traceback
     await ctx.send(embed=embed)
 
 
@@ -126,7 +126,7 @@ async def on_command_error(ctx, error):
 ####################
 
 @bot.command(name='crit', help='Search the critical hit table')
-async def crit_roll(ctx, percentage: int, damage_type: str):
+async def crit_roll(ctx: commands.Context, percentage: int, damage_type: str):
     """
     Search the provided csv of the crititcal hit table using the user's inputed percentage and damage type. Reply with the resulting effect
 
@@ -179,7 +179,7 @@ async def crit_roll(ctx, percentage: int, damage_type: str):
 ###################
 ###################
 @bot.command(name='spell', help='Search spell definitions')
-async def spell_lookup(ctx, spell_name: str):
+async def spell_lookup(ctx: commands.Context, spell_name: str):
     '''
     Search for a spell and return its description
 
@@ -195,19 +195,19 @@ async def spell_lookup(ctx, spell_name: str):
     spell = spell_name.lower()
 
     with open('spells.json', mode='r', encoding='utf8') as jsonfile:
-        spells = json.load(jsonfile)
+        spells = load(jsonfile)
 
     embed = discord.Embed(title=f"Can't find spell '{spell}'")
     for s in spells:
         if spell == s.lower():
-            embed = helpers.dict_to_embed(s, spells[s])
+            embed = utils.dict_to_embed(s, spells[s])
     await ctx.send(embed=embed)
 
 
 ###################
 ###################
 @bot.command(name='roll_dice', help='Roll virtual dice')
-async def roll(ctx, number_of_dice: int, number_of_sides: int):
+async def roll(ctx: commands.Context, number_of_dice: int, number_of_sides: int):
     """
     Simulates rolling of dice
 
@@ -225,7 +225,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
     #Chooses a random int between 1 and the given number of sides
     #Repeats as many times as number_of_dice
     dice = [
-        str(random.choice(range(1, number_of_sides + 1)))
+        str(choice(range(1, number_of_sides + 1)))
         for _ in range(number_of_dice)
     ]
     await ctx.send(', '.join(dice))
@@ -233,7 +233,7 @@ async def roll(ctx, number_of_dice: int, number_of_sides: int):
 ###################
 ###################
 @bot.command(name='set_activity', help='Set the bot\'s activity')
-async def set_act(ctx, activity_type: str, activity_name: str):
+async def set_act(ctx: commands.Context, activity_type: str, activity_name: str):
     """
     Set the bot's discord activity status
 
@@ -261,7 +261,7 @@ async def set_act(ctx, activity_type: str, activity_name: str):
 ###################
 ###################
 @bot.command(name='meme', help='Dank Me Me')
-async def send_meme(ctx):
+async def send_meme(ctx: commands.Context):
     """
     Sends a meme to the chat
 
@@ -271,15 +271,15 @@ async def send_meme(ctx):
         Message context object from Discord
     """
 
-    random_meme = random.choice(os.listdir("Memes")) #choose a random file from the "Memes" folder
+    random_meme = choice(listdir("Memes")) #choose a random file from the "Memes" folder
     while random_meme == ".DS_Store": #If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
-        random_meme = random.choice(os.listdir("Memes"))
+        random_meme = choice(listdir("Memes"))
     await ctx.send(file=discord.File(f"Memes/{random_meme}"))
 
 ###################
 ###################
 @bot.command(name='ping', help="Ping Volobot")
-async def ping_response(ctx):
+async def ping_response(ctx: commands.Context):
     """
     Responds to a ping request with the estimated ping of the sender
 
@@ -297,7 +297,7 @@ async def ping_response(ctx):
 ###################
 ###################
 @bot.command(name='inventory', help="Check the party's inventory")
-async def check_inventory(ctx, item: str=None):
+async def check_inventory(ctx: commands.Context, item: str=None):
     '''
     Displays the contents of inventory.json
 
@@ -310,19 +310,19 @@ async def check_inventory(ctx, item: str=None):
         The name of the inventory item to list. If ommitted, entire inventory will be listed.
     '''
     with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
-        inventory = json.load(jsonfile)
+        inventory = load(jsonfile)
 
     if(item == None):
-        embed = helpers.dict_to_embed("Inventory", inventory)
+        embed = utils.dict_to_embed("Inventory", inventory)
     else:
-        embed = helpers.dict_to_embed(item, inventory[item])
+        embed = utils.dict_to_embed(item, inventory[item])
 
     await ctx.send(embed=embed)
 
 ###################
 ###################
 @bot.command(name="store", help="store items in the party's inventory")
-async def store_inventory(ctx, item: str, desc: str=None, quant: int=1):
+async def store_inventory(ctx: commands.Context, item: str, desc: str=None, quant: int=1):
     '''
     Store items in inventory.json
 
@@ -341,7 +341,7 @@ async def store_inventory(ctx, item: str, desc: str=None, quant: int=1):
         The quantity of the item to store, by default 1
     '''
     with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
-        inventory = json.load(jsonfile)
+        inventory = load(jsonfile)
     
     if item not in inventory.keys():
         inventory[item] = {"description": desc, "quantity": quant}
@@ -351,7 +351,7 @@ async def store_inventory(ctx, item: str, desc: str=None, quant: int=1):
             inventory[item]["description"] = desc
     
     with open('inventory.json', mode='w') as jsonfile:
-        jsonfile.write(json.dumps(inventory, indent=4))
+        jsonfile.write(dumps(inventory, indent=4))
 
     response = f"Added {quant} {item} to your inventory."
 
@@ -360,7 +360,7 @@ async def store_inventory(ctx, item: str, desc: str=None, quant: int=1):
 ###################
 ###################
 @bot.command(name="remove", help="remove items from the party's inventory")
-async def remove_inventory(ctx, item: str, quant: int=None):
+async def remove_inventory(ctx: commands.Context, item: str, quant: int=None):
     '''
     Remove items from inventory.json
 
@@ -376,7 +376,7 @@ async def remove_inventory(ctx, item: str, quant: int=None):
         The quantity of items to remove, by default all
     '''
     with open('inventory.json', mode='r', encoding='utf8') as jsonfile:
-        inventory = json.load(jsonfile)
+        inventory = load(jsonfile)
     
     if quant == None or quant >= inventory[item]["quantity"]:
         del inventory[item]
@@ -384,14 +384,17 @@ async def remove_inventory(ctx, item: str, quant: int=None):
         inventory[item]["quantity"] -= quant
     
     with open('inventory.json', mode='w') as jsonfile:
-        jsonfile.write(json.dumps(inventory, indent=4))
+        jsonfile.write(dumps(inventory, indent=4))
 
     response = f"Removed {'all' if quant == None else quant} {item} from your inventory."
 
     await ctx.send(response)
 
-###############
-### RUN BOT ###
-###############
 
-bot.run(TOKEN)
+############
+### MAIN ###
+############
+
+if __name__ == "__main__":
+    ''' Run the bot'''
+    bot.run(TOKEN)
