@@ -11,9 +11,11 @@ from discord.ext.commands import Bot, Context, parameter
 from discord.utils import get
 from dotenv import load_dotenv
 from quotes import QUOTES
+from urllib.error import HTTPError
 from utils import (
     create_error_embed,
     dict_to_embed,
+    get_ddb_spell,
     load_json,
     print_error,
     validate_crit_percentage,
@@ -156,6 +158,26 @@ async def send_spell_description(
             embed = dict_to_embed(spell, known_spells[spell])
             break
     await ctx.send(embed=embed)
+
+
+######################
+# Test spell command #
+######################
+
+
+@bot.command(name="test_spell")
+async def test_spell(ctx, spell_name):
+    try:
+        embed = get_ddb_spell(spell_name)
+        await ctx.send(embed=embed)
+    except HTTPError:
+        response = f"**Error:** Cannot find spell '{spell_name}'"
+        await ctx.send(response)
+
+
+######################
+# Test spell command #
+######################
 
 
 @bot.command(name="roll", help="Roll virtual dice")

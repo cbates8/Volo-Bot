@@ -1,9 +1,11 @@
 """ Utils for VoloBot"""
 import json
-from traceback import format_exception
-from typing import Any, Union
+from bs4 import BeautifulSoup
 from discord import Embed
 from discord.ext.commands import BadArgument, MissingRequiredArgument, TooManyArguments
+from traceback import format_exception
+from typing import Any, Union
+from urllib.request import Request, urlopen
 
 
 def print_list(target: list[str]) -> None:
@@ -145,3 +147,54 @@ def dict_to_embed(title: str, content: dict) -> Embed:
             embed.add_field(name=field, value=formatted_values, inline=False)
 
     return embed
+
+
+def get_ddb_spell(spell_name: str) -> Embed:
+    """Get spell info from DnD Beyond
+
+    Args:
+        spell_name (`str`): name of the spell to lookup
+
+    Returns:
+        `Embed`: Discord embed containing spell info
+    """
+    spell_name = spell_name.replace(" ", "-")
+    url = f"https://www.dndbeyond.com/spells/{spell_name}"
+
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    # Open the url and parse the HTML
+    with urlopen(req) as spell_page:
+        # Parse the site's HTML using the Beautiful Soup web-scraping library
+        # Note: 'html.parser' indicates the use of Python's native HTML parsing library.
+        # 		The 'lxml' parser is slightly faster than Python's default, but it requires the installation of a third-party module. https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
+        # 		For this reason, I have decided to use the default parser for consistency across devices.
+        parsed_html = BeautifulSoup(spell_page, "html.parser")
+
+    spell_name = parsed_html.find("h1", class_="page-title").text
+
+    spell_description = parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
+
+    spell_dict = {"description": spell_description}
+
+    items = {
+        "Level": "level",
+        "Casting Time": "casting-time",
+        "Range": "range-area",
+        "Components": "components",
+        "Duration": "duration",
+        "School": "school",
+        "Attack/Save": "attack-save",
+        "Damage Effect": "damage-effect",
+    }
+
+    for k, v in items.items():
+        spell_dict[k] = get_statblock_value(v, parsed_html)
+
+    spell_dict["Source"] = url
+
+    return dict_to_embed(spell_name, spell_dict)
+
+
+def get_statblock_value(item_name, parsed_html):
+    item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
+    return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]
