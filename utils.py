@@ -8,6 +8,11 @@ from typing import Any, Union
 from urllib.request import Request, urlopen
 
 
+############################
+### Error handling utils ###
+############################
+
+
 def print_list(target: list[str]) -> None:
     """Neatly print a Python list object
 
@@ -64,6 +69,11 @@ def create_error_embed(error: Any) -> Embed:
     return embed
 
 
+###############################
+### Input validation utils ####
+###############################
+
+
 def validate_crit_percentage(input_percentage: int) -> bool:
     """Validate user input crit percentage
 
@@ -95,6 +105,11 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
         ):  # Includes abreviation support for damge types (spelling bludgeoning is hard!)
             return dmg_type
     return False
+
+
+#################################
+### Data transformation utils ###
+#################################
 
 
 def load_json(file_path: str) -> Union[list, dict]:
@@ -149,8 +164,13 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     return embed
 
 
+############################
+### Spell scraping utils ###
+############################
+
+
 def get_ddb_spell(spell_name: str) -> Embed:
-    """Get spell info from DnD Beyond
+    """Scrape spell info from DnD Beyond (https://www.dndbeyond.com/spells/{spell-name})
 
     Args:
         spell_name (`str`): name of the spell to lookup
@@ -165,18 +185,19 @@ def get_ddb_spell(spell_name: str) -> Embed:
     # Open the url and parse the HTML
     with urlopen(req) as spell_page:
         # Parse the site's HTML using the Beautiful Soup web-scraping library
-        # Note: 'html.parser' indicates the use of Python's native HTML parsing library.
-        # 		The 'lxml' parser is slightly faster than Python's default, but it requires the installation of a third-party module. https://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
-        # 		For this reason, I have decided to use the default parser for consistency across devices.
         parsed_html = BeautifulSoup(spell_page, "html.parser")
 
+    # Get the name of the spell from the page title
     spell_name = parsed_html.find("h1", class_="page-title").text
 
+    # Get the spell description from the page content
     spell_description = parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
 
+    # Create a dict to store spell information. Will be turned into an Embed later
     spell_dict = {"description": spell_description}
-
-    items = {
+    
+    # Dict containing categories of spell information. Keys are the pretty title to be used in the Embed, values are the name of the HTML object to scrape
+    spell_details = {
         "Level": "level",
         "Casting Time": "casting-time",
         "Range": "range-area",
@@ -184,17 +205,32 @@ def get_ddb_spell(spell_name: str) -> Embed:
         "Duration": "duration",
         "School": "school",
         "Attack/Save": "attack-save",
-        "Damage Effect": "damage-effect",
+        "Damage Type": "damage-effect",
     }
 
-    for k, v in items.items():
-        spell_dict[k] = get_statblock_value(v, parsed_html)
+    # Scrape each spell detail and add to the dictionary
+    for label, item in spell_details.items():
+        spell_dict[label] = get_statblock_value(item, parsed_html)
 
+    # Add ddb page url to the dictonary
     spell_dict["Source"] = url
 
     return dict_to_embed(spell_name, spell_dict)
 
 
-def get_statblock_value(item_name, parsed_html):
+def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
+    """
+    Extract all text from a ddb-statblock-item
+
+    Args:
+        item_name (`str`): Name of the statblock-item to scrape
+        parsed_html (`BeautifulSoup`): HTML of the site containing the statblocks
+
+    Returns:
+        `str`: Scraped text from ddb
+    """
+    # Identify the item containing the information we want
     item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
+    
+    # Get all text containied in the value section of the statblock
     return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]

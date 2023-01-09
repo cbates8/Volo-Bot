@@ -1,6 +1,6 @@
 """Event and command definitions for VoloBot: the worlds best D&D Discord bot!
 Author: Casey Bates
-Repo: https://github.com/cbates8/Volo-Bot
+GitHub: https://github.com/cbates8/Volo-Bot
 """
 from csv import DictReader
 import os
@@ -22,6 +22,7 @@ from utils import (
     validate_damage_type,
     write_json,
 )
+
 
 #################
 ### BOT SETUP ###
@@ -141,7 +142,9 @@ async def send_crit_outcome(
 
 @bot.command(name="spell", help="Search spell definitions")
 async def send_spell_description(
-    ctx: Context, spell_name: str = parameter(description="The name of the spell to search for")
+    ctx: Context, 
+    spell_name: str = parameter(description="The name of the spell to search for"),
+    source: str = parameter(default="all", description="Source to get spell info from ('local' | 'web' )")
 ) -> None:
     """Search for a spell and return its description
 
@@ -149,35 +152,34 @@ async def send_spell_description(
         ctx (`Context`): Message context object from Discord
         spell_name (`str`): The name of the spell to search for
     """
+    source = source.lower()
+    if source not in ["all", "local", "web"]:
+        response = f"**Error:** Invalid Source '{source}'\nMust be one of 'local' or 'web'"
+        await ctx.send(response)
+        return
 
-    known_spells = load_json("spells.json")
+    if source != "web":
+        # Search local spell file for information
+        known_spells = load_json("spells.json")
 
-    embed = Embed(title=f"Can't find spell '{spell_name}'")
-    for spell in known_spells:
-        if spell_name.lower() == spell.lower():
-            embed = dict_to_embed(spell, known_spells[spell])
-            break
-    await ctx.send(embed=embed)
-
-
-######################
-# Test spell command #
-######################
-
-
-@bot.command(name="test_spell")
-async def test_spell(ctx, spell_name):
-    try:
-        embed = get_ddb_spell(spell_name)
-        await ctx.send(embed=embed)
-    except HTTPError:
-        response = f"**Error:** Cannot find spell '{spell_name}'"
+        for spell in known_spells:
+            if spell_name.lower() == spell.lower():
+                embed = dict_to_embed(spell, known_spells[spell])
+                await ctx.send(embed=embed)
+                return
+    
+    if source == "all":
+        # If spell can't be found locally, scrape D&D Beyond
+        response = f"Searching D&D Beyond for spell '{spell_name}'"
         await ctx.send(response)
 
-
-######################
-# Test spell command #
-######################
+    if source != "local":
+        try:
+            embed = get_ddb_spell(spell_name)
+            await ctx.send(embed=embed)
+        except HTTPError:
+            response = f"**Error:** Cannot find spell '{spell_name}'"
+            await ctx.send(response)
 
 
 @bot.command(name="roll", help="Roll virtual dice")
