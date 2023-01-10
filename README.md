@@ -4,7 +4,7 @@ A simple Dungeons and Dragons themed Discord Bot. Named for the famed [Volothamp
 
 ## Commands:
 
-### !roll <number_of_dice> <number_of_sides>
+### !roll \<number_of_dice\> \<number_of_sides\>
 
 VoloBot will roll the specified number of dice, each with the specified number of sides.
 
@@ -12,7 +12,7 @@ EX: **'!roll 3 6'** will tell VoloBot to roll 3 6-Sided dice.
 
 ![roll_dice example](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/roll_dice_example.png)
 
-### !crit <crit_percentage> <dmg_type>
+### !crit \<crit_percentage\> \<dmg_type\>
 
 VoloBot will take a percentage (1-100) and a type of damage (slashing, bludgeoning, piercing, fire, cold, lightning, force, necrotic, radiant, acid, psychic, thunder), and reply with the corresponding effect from the critical hit table.
 
@@ -22,7 +22,7 @@ EX: **'!crit 40 slashing'** will send the corresponding effect of a 40% roll wit
 
 ![crit example](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/crit_example.png)
 
-### !spell <spell_name> <source>
+### !spell \<spell_name\> \<source\>
 
 Search spell descriptions. VoloBot will first check [spells.json](https://github.com/cbates8/Volo-Bot/blob/main/spells.json) for locally stored information to improve response time and support homebrew spells. If a spell is not found locally, VoloBot will search for the spell on [D&D Beyond](https://www.dndbeyond.com/).
 
@@ -34,7 +34,7 @@ EX: **'!spell fireball web'** will send the description of spell 'fireball' as f
 
 ![spell example 2](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/spell_example_2.png)
 
-### !store <item> <description> <quantity>
+### !store \<item\> \<description\> \<quantity\>
 
 Add items to VoloBot's virtual inventory.
 
@@ -42,7 +42,7 @@ EX: **'!store "health potion" "Restores 2d4 + 2 HP" 2'**
 
 ![spell example 2](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/store_example.png)
 
-### !bag <item>
+### !bag \<item\>
 
 List items stored in VoloBot's virtual inventory. Specifying an item will give more information about that item.
 
@@ -50,7 +50,7 @@ EX: **'!bag'**
 
 ![spell example 2](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/bag_example.png)
 
-### !remove <item> <quantity>
+### !remove \<item\> \<quantity\>
 
 Remove items from VoloBot's virtual inventory.
 
@@ -66,9 +66,9 @@ EX: **'!ping'**
 
 ![spell example 2](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/ping_example.png)
 
-### !set_activity <activity_type> <activity_name>
+### !set_activity \<activity_type\> \<activity_name\>
 
-Set VoloBot's Discord activity status, where <activity_type> is one of 'Playing', 'Listening', or 'Watching'.
+Set VoloBot's Discord activity status, where \<activity_type\> is one of 'Playing', 'Listening', or 'Watching'.
 
 EX: **'!set_activity playing D&D'** will set VoloBot's Discord status to _'Playing D&D'_.
 
