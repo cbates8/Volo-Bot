@@ -1,19 +1,20 @@
 """Event and command definitions for VoloBot: the worlds best D&D Discord bot!
 Author: Casey Bates
-Repo: https://github.com/cbates8/Volo-Bot
+GitHub: https://github.com/cbates8/Volo-Bot
 """
-from csv import DictReader
 import os
 import random
+from csv import DictReader
 from typing import Any
+from urllib.error import HTTPError
 from discord import Activity, ActivityType, Embed, File, Game, Intents, Message
 from discord.ext.commands import Bot, Context, parameter
-from discord.utils import get
 from dotenv import load_dotenv
 from quotes import QUOTES
 from utils import (
     create_error_embed,
     dict_to_embed,
+    get_ddb_spell,
     load_json,
     print_error,
     validate_crit_percentage,
@@ -21,16 +22,16 @@ from utils import (
     write_json,
 )
 
+
 #################
 ### BOT SETUP ###
 #################
+
 
 # Parse .env file
 load_dotenv()
 # Get DISCORD_TOKEN from token specified in the .env file
 TOKEN = os.getenv("DISCORD_TOKEN")
-# Get DISCORD_GUILD from guild ID specified in the .env file
-GUILD = os.getenv("DISCORD_GUILD")
 
 # Define intents for the bot
 INTENTS = Intents.default()
@@ -54,11 +55,11 @@ bot = Bot(command_prefix="!", description=DESCRIPTION, intents=INTENTS)
 async def on_ready() -> None:
     """On ready, bot will print to the console confirming its connection to discord, as well as the guild specified in the .env file"""
     print(f"{bot.user.name} has connected to Discord!")
-
-    guild = get(bot.guilds, name=GUILD)
-    print(f"{bot.user.name} is connected to the following guild:\n{guild.name}(id: {guild.id})")
-    # set activity status to "Playing Dungeons and Dragons"
+    print(f"{bot.user.name} is connected to the following guilds:")
+    for guild in bot.guilds:
+        print(f"\t{guild.name} (id: {guild.id})")
     # await bot.change_presence(activity=discord.CustomActivity(name="Reading \'Volo\'s Guide to Monsters\'", emoji=None, type=discord.ActivityType.custom))
+    # set activity status to "Playing Dungeons and Dragons"
     await bot.change_presence(activity=Game(name="Dungeons and Dragons"))
 
 
@@ -77,9 +78,8 @@ async def on_message(message: Message) -> None:
     if "volo" in message.content.lower():
         response = random.choice(QUOTES)
         await message.channel.send(response)
-    await bot.process_commands(
-        message
-    )  # Without this line, the following commands will not work, and only this on_message event will run
+    # Without this line, the following commands will not work, and only this on_message event will run
+    await bot.process_commands(message)
 
 
 @bot.event
@@ -137,25 +137,52 @@ async def send_crit_outcome(
     await ctx.send(response)
 
 
-@bot.command(name="spell", help="Search spell definitions")
+@bot.command(name="spell", help="Search spell descriptions")
 async def send_spell_description(
-    ctx: Context, spell_name: str = parameter(description="The name of the spell to search for")
+    ctx: Context,
+    spell_name: str = parameter(description="The name of the spell to search for"),
+    source: str = parameter(
+        default="all", description="Source to get spell info from ('local' | 'web' )"
+    ),
 ) -> None:
     """Search for a spell and return its description
 
     Args:
         ctx (`Context`): Message context object from Discord
         spell_name (`str`): The name of the spell to search for
+        source (`str`, optional): The source to check for spell info. Defaults to 'all'
     """
+    source = source.lower()
+    if source not in ["all", "local", "web"]:
+        response = f"**Error:** Invalid Source '{source}'\nMust be one of 'local' or 'web'"
+        await ctx.send(response)
+        return
 
-    known_spells = load_json("spells.json")
+    if source != "web":
+        # Search local spell file for information
+        known_spells = load_json("spells.json")
 
-    embed = Embed(title=f"Can't find spell '{spell_name}'")
-    for spell in known_spells:
-        if spell_name.lower() == spell.lower():
-            embed = dict_to_embed(spell, known_spells[spell])
-            break
-    await ctx.send(embed=embed)
+        for spell in known_spells:
+            if spell_name.lower() == spell.lower():
+                embed = dict_to_embed(spell, known_spells[spell])
+                await ctx.send(embed=embed)
+                return
+        if source == "local":
+            response = f"**Error:** Cannot find spell '{spell_name}'"
+            await ctx.send(response)
+
+    if source == "all":
+        # If spell can't be found locally, scrape D&D Beyond
+        response = f"Searching D&D Beyond for spell '{spell_name}'"
+        await ctx.send(response)
+
+    if source != "local":
+        try:
+            embed = get_ddb_spell(spell_name)
+            await ctx.send(embed=embed)
+        except HTTPError:
+            response = f"**Error:** Cannot find spell '{spell_name}'"
+            await ctx.send(response)
 
 
 @bot.command(name="roll", help="Roll virtual dice")
@@ -191,21 +218,19 @@ async def set_activity(
         activity_name (`str`): Description of activity to be displayed (e.g. "Playing [activity_name]")
     """
     if activity_type.lower() == "playing":
-        await bot.change_presence(
-            activity=Game(name=activity_name)
-        )  # sets activity to 'Playing activity_name'
+        # sets activity to 'Playing activity_name'
+        await bot.change_presence(activity=Game(name=activity_name))
     elif activity_type.lower() == "listening":
+        # sets activity to "Listening to activity_name"
         await bot.change_presence(
             activity=Activity(type=ActivityType.listening, name=activity_name)
-        )  # sets activity to "Listening to activity_name"
+        )
     elif activity_type.lower() == "watching":
-        await bot.change_presence(
-            activity=Activity(type=ActivityType.watching, name=activity_name)
-        )  # sets activity to "Watching activity_name"
+        # sets activity to "Watching activity_name"
+        await bot.change_presence(activity=Activity(type=ActivityType.watching, name=activity_name))
     else:
-        await ctx.send(
-            "Activity not supported. Supported Activities: Playing, Listening, Watching"
-        )  # Sends a list of supported activities if one isn't given
+        # Sends a list of supported activities if one isn't given
+        await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching")
 
 
 @bot.command(name="meme", help="Dank Me Me")
@@ -216,9 +241,8 @@ async def send_meme(ctx: Context):
         ctx (`Context`): Message context object from Discord
     """
     random_meme = random.choice(os.listdir("Memes"))  # choose a random file from the "Memes" folder
-    while (
-        random_meme == ".DS_Store"
-    ):  # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
+    # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
+    while random_meme == ".DS_Store":
         random_meme = random.choice(os.listdir("Memes"))
     await ctx.send(file=File(f"Memes/{random_meme}"))
 
@@ -232,9 +256,8 @@ async def send_ping_response(ctx: Context) -> None:
     """
     embed = Embed(title="Pong!")
     response = await ctx.send(embed=embed)
-    ping = (
-        response.created_at - ctx.message.created_at
-    ).total_seconds() * 1000  # Calculate the time difference between ping request and pong response
+    # Calculate the time difference between ping request and pong response
+    ping = (response.created_at - ctx.message.created_at).total_seconds() * 1000
     embed.add_field(name=":ping_pong:", value=f"{int(ping)} ms")  # Add calculated ping to the embed
     await response.edit(embed=embed)  # edit response to include calculated ping (ms)
 
@@ -276,7 +299,7 @@ async def store_inventory(
         ctx (`Context`): Message context object from Discord
         item (`str`): The name of the item to store
         description (`str`, optional): A description of the stored item. Defaults to `None`.
-        quantity (`int`, optional): The quantity of the item to store. Defaults to `1`.
+        quantity (`int`, optional): The quantity of the item to store. Defaults to '1'.
     """
     inventory = load_json("inventory.json")
 

@@ -1,9 +1,16 @@
-""" Utils for VoloBot"""
+"""Utils for VoloBot"""
 import json
 from traceback import format_exception
 from typing import Any, Union
+from urllib.request import Request, urlopen
+from bs4 import BeautifulSoup
 from discord import Embed
 from discord.ext.commands import BadArgument, MissingRequiredArgument, TooManyArguments
+
+
+############################
+### Error handling utils ###
+############################
 
 
 def print_list(target: list[str]) -> None:
@@ -62,6 +69,11 @@ def create_error_embed(error: Any) -> Embed:
     return embed
 
 
+###############################
+### Input validation utils ####
+###############################
+
+
 def validate_crit_percentage(input_percentage: int) -> bool:
     """Validate user input crit percentage
 
@@ -82,7 +94,7 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
         input_type (`str`): User input damage type
 
     Returns:
-        `bool`: True if input is valid, False otherwise.
+        `Union[str, bool]`: damage type if it is valid, False otherwise.
     """
     input_type = input_type.lower()
 
@@ -93,6 +105,11 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
         ):  # Includes abreviation support for damge types (spelling bludgeoning is hard!)
             return dmg_type
     return False
+
+
+#################################
+### Data transformation utils ###
+#################################
 
 
 def load_json(file_path: str) -> Union[list, dict]:
@@ -132,16 +149,88 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     """
 
     embed = Embed(title=title)
-    for field in content:
-        if field == "description":
-            embed.description = content[field]
+    for key, value in content.items():
+        if key == "description":
+            embed.description = value
         else:
-            if isinstance(content[field], dict):
+            if isinstance(value, dict):
                 formatted_values = ""
-                for key, value in content[field]:
-                    formatted_values += f"{key}: {value}\n\n"
+                for k, v in value.items():
+                    formatted_values += f"{k}: {v}\n\n"
             else:
-                formatted_values = content[field]
-            embed.add_field(name=field, value=formatted_values, inline=False)
+                formatted_values = value
+            embed.add_field(name=key, value=formatted_values, inline=False)
 
     return embed
+
+
+############################
+### Spell scraping utils ###
+############################
+
+
+def get_ddb_spell(spell_name: str) -> Embed:
+    """Scrape spell info from DnD Beyond (https://www.dndbeyond.com/spells/{spell-name})
+
+    Args:
+        spell_name (`str`): name of the spell to lookup
+
+    Returns:
+        `Embed`: Discord embed containing spell info
+    """
+    spell_name = spell_name.replace(" ", "-")
+    url = f"https://www.dndbeyond.com/spells/{spell_name}"
+
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    # Open the url and parse the HTML
+    with urlopen(req) as spell_page:
+        # Parse the site's HTML using the Beautiful Soup web-scraping library
+        parsed_html = BeautifulSoup(spell_page, "html.parser")
+
+    # Get the name of the spell from the page title
+    spell_name = parsed_html.find("h1", class_="page-title").text
+
+    # Get the spell description from the page content
+    spell_description = parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
+
+    # Create a dict to store spell information. Will be turned into an Embed later
+    spell_dict = {"description": spell_description}
+
+    # Dict containing categories of spell information. Keys are the pretty title to be used in the Embed, values are the name of the HTML object to scrape
+    spell_details = {
+        "Level": "level",
+        "Casting Time": "casting-time",
+        "Range": "range-area",
+        "Components": "components",
+        "Duration": "duration",
+        "School": "school",
+        "Attack/Save": "attack-save",
+        "Damage Type": "damage-effect",
+    }
+
+    # Scrape each spell detail and add to the dictionary
+    for label, item in spell_details.items():
+        spell_dict[label] = get_statblock_value(item, parsed_html)
+
+    # Add ddb page url to the dictonary
+    spell_dict["Source"] = url
+
+    return dict_to_embed(spell_name, spell_dict)
+
+
+def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
+    """
+    Extract all text from a ddb-statblock-item
+
+    Args:
+        item_name (`str`): Name of the statblock-item to scrape
+        parsed_html (`BeautifulSoup`): HTML of the site containing the statblocks
+
+    Returns:
+        `str`: Scraped text from ddb
+    """
+    # Identify the item containing the information we want
+    item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
+
+    # Get all text containied in the value section of the statblock
+    return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]
