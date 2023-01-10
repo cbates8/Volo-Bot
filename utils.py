@@ -1,11 +1,11 @@
-""" Utils for VoloBot"""
+"""Utils for VoloBot"""
 import json
-from bs4 import BeautifulSoup
-from discord import Embed
-from discord.ext.commands import BadArgument, MissingRequiredArgument, TooManyArguments
 from traceback import format_exception
 from typing import Any, Union
 from urllib.request import Request, urlopen
+from bs4 import BeautifulSoup
+from discord import Embed
+from discord.ext.commands import BadArgument, MissingRequiredArgument, TooManyArguments
 
 
 ############################
@@ -94,7 +94,7 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
         input_type (`str`): User input damage type
 
     Returns:
-        `bool`: True if input is valid, False otherwise.
+        `Union[str, bool]`: damage type if it is valid, False otherwise.
     """
     input_type = input_type.lower()
 
@@ -149,17 +149,17 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     """
 
     embed = Embed(title=title)
-    for field in content:
-        if field == "description":
-            embed.description = content[field]
+    for key, value in content.items():
+        if key == "description":
+            embed.description = value
         else:
-            if isinstance(content[field], dict):
+            if isinstance(value, dict):
                 formatted_values = ""
-                for key, value in content[field]:
-                    formatted_values += f"{key}: {value}\n\n"
+                for k, v in value.items():
+                    formatted_values += f"{k}: {v}\n\n"
             else:
-                formatted_values = content[field]
-            embed.add_field(name=field, value=formatted_values, inline=False)
+                formatted_values = value
+            embed.add_field(name=key, value=formatted_values, inline=False)
 
     return embed
 
@@ -195,7 +195,7 @@ def get_ddb_spell(spell_name: str) -> Embed:
 
     # Create a dict to store spell information. Will be turned into an Embed later
     spell_dict = {"description": spell_description}
-    
+
     # Dict containing categories of spell information. Keys are the pretty title to be used in the Embed, values are the name of the HTML object to scrape
     spell_details = {
         "Level": "level",
@@ -231,6 +231,6 @@ def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
     """
     # Identify the item containing the information we want
     item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
-    
+
     # Get all text containied in the value section of the statblock
     return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]
