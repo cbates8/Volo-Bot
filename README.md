@@ -10,7 +10,7 @@ VoloBot will roll the specified number of dice, each with the specified number o
 
 EX: **'!roll 3 6'** will tell VoloBot to roll 3 6-Sided dice.
 
-![roll_dice example](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/roll_dice_example.png)
+![roll example](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/roll_example.png)
 
 ### !crit \<crit_percentage\> \<dmg_type\>
 
