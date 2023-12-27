@@ -101,6 +101,35 @@ async def on_command_error(ctx: Context, error: Any) -> None:
 ####################
 
 
+@bot.command(name="fumble", help="Search the critical miss table")
+async def send_fumble_outcome(
+    ctx: Context,
+    fumble_percentage: int = parameter(description="Percentage representing critical miss severity"),
+) -> None:
+    """Search the provided csv of the crititcal miss table using the user's inputed percentage. Reply with the resulting effect
+
+    Args:
+        ctx (`Context`): Message context object from Discord
+        fumble_percentage (`int`): Percentage representing critical miss severity
+    """
+    if validate_crit_percentage(fumble_percentage):
+        # Opens 'Critical_Hit_Table.csv' and treats it as a dictionary.
+        # First row treated as keys, with following rows each being its own set of values for those keys
+        with open("Fumble_Table.csv", mode="r", encoding="utf8") as csvfile:
+            csvreader = DictReader(csvfile)
+            roll_values = csvreader.fieldnames[0]
+            fumble_effects = csvreader.fieldnames[1]
+
+            for row in csvreader:
+                # Uses 'row' as the dictionary identifier and finds the value assigned to key 'fumble_effects'
+                if int(row[roll_values]) == fumble_percentage:
+                    response = row[fumble_effects]
+                    break
+    else:
+        response = "**Error:** Invalid Percentage Roll\nMust be value from 1-100"
+    await ctx.send(response)
+
+
 @bot.command(name="crit", help="Search the critical hit table")
 async def send_crit_outcome(
     ctx: Context,
