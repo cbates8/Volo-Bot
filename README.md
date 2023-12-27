@@ -81,7 +81,7 @@ VoloBot will reply with a random meme.
 
 ![meme example](https://raw.githubusercontent.com/cbates8/Volo-Bot/main/Command%20Examples/meme_example.png)
 
-## Dependencies:
+## Dependencies (see `requirements.txt`):
 
 ### discord.py
 
