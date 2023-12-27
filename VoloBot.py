@@ -131,7 +131,7 @@ async def send_crit_outcome(
                         break
             else:
                 # using chr(10) as newline, because f-string doesn't support \n in expression part
-                response = f"**Error:** Invalid Damage Type\nSupported types: ```{chr(10).join(valid_dmg_types)}```"
+                response = f"**Error:** Invalid Damage Type\nSupported types: ```\n{chr(10).join(valid_dmg_types)}```"
     else:
         response = "**Error:** Invalid Percentage Roll\nMust be value from 1-100"
     await ctx.send(response)
