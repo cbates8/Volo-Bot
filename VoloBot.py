@@ -35,7 +35,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Define intents for the bot
 INTENTS = Intents.default()
-INTENTS.message_content = True  # pylint: disable=assigning-non-slot
+INTENTS.message_content = True
 
 DESCRIPTION = """A Dungeons and Dragons bot based on Volothamp Geddarm.
 

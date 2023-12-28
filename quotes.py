@@ -1,5 +1,4 @@
 """Quotes to be used by VoloBot when responding to its name"""
-# pylint: disable=line-too-long
 QUOTES = [
     # Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
     "Volothamp Geddarm at your service.",
