@@ -7,9 +7,11 @@ import random
 from csv import DictReader
 from typing import Any
 from urllib.error import HTTPError
+
 from discord import Activity, ActivityType, Embed, File, Game, Intents, Message
 from discord.ext.commands import Bot, Context, parameter
 from dotenv import load_dotenv
+
 from quotes import QUOTES
 from utils import (
     create_error_embed,
@@ -21,7 +23,6 @@ from utils import (
     validate_damage_type,
     write_json,
 )
-
 
 #################
 ### BOT SETUP ###
@@ -104,7 +105,9 @@ async def on_command_error(ctx: Context, error: Any) -> None:
 @bot.command(name="fumble", help="Search the critical miss table")
 async def send_fumble_outcome(
     ctx: Context,
-    fumble_percentage: int = parameter(description="Percentage representing critical miss severity"),
+    fumble_percentage: int = parameter(
+        description="Percentage representing critical miss severity"
+    ),
 ) -> None:
     """Search the provided csv of the crititcal miss table using the user's inputed percentage. Reply with the resulting effect
 
@@ -133,7 +136,9 @@ async def send_fumble_outcome(
 @bot.command(name="crit", help="Search the critical hit table")
 async def send_crit_outcome(
     ctx: Context,
-    crit_percentage: int = parameter(description="Percentage representing critical hit severity"),
+    crit_percentage: int = parameter(
+        description="Percentage representing critical hit severity"
+    ),
     dmg_type: str = parameter(description="Type of damage being inflicted"),
 ) -> None:
     """Search the provided csv of the crititcal hit table using the user's inputed percentage and damage type. Reply with the resulting effect
@@ -183,7 +188,9 @@ async def send_spell_description(
     """
     source = source.lower()
     if source not in ["all", "local", "web"]:
-        response = f"**Error:** Invalid Source '{source}'\nMust be one of 'local' or 'web'"
+        response = (
+            f"**Error:** Invalid Source '{source}'\nMust be one of 'local' or 'web'"
+        )
         await ctx.send(response)
         return
 
@@ -218,7 +225,9 @@ async def send_spell_description(
 async def roll_dice(
     ctx: Context,
     number_of_dice: int = parameter(description="The number of dice to be rolled"),
-    number_of_sides: int = parameter(description="How many sides each rolled die should have"),
+    number_of_sides: int = parameter(
+        description="How many sides each rolled die should have"
+    ),
 ) -> None:
     """Simulate rolling of dice
 
@@ -229,15 +238,21 @@ async def roll_dice(
     """
     # Chooses a random int between 1 and the given number of sides
     # Repeats as many times as number_of_dice
-    dice = [str(random.choice(range(1, number_of_sides + 1))) for _ in range(number_of_dice)]
+    dice = [
+        str(random.choice(range(1, number_of_sides + 1))) for _ in range(number_of_dice)
+    ]
     await ctx.send(", ".join(dice))
 
 
 @bot.command(name="set_activity", help="Set the bot's activity")
 async def set_activity(
     ctx: Context,
-    activity_type: str = parameter(description="Type of activity to be displayed (e.g. 'Playing')"),
-    activity_name: str = parameter(description="Description of activity to be displayed"),
+    activity_type: str = parameter(
+        description="Type of activity to be displayed (e.g. 'Playing')"
+    ),
+    activity_name: str = parameter(
+        description="Description of activity to be displayed"
+    ),
 ) -> None:
     """Set the bot's Discord activity status
 
@@ -256,10 +271,14 @@ async def set_activity(
         )
     elif activity_type.lower() == "watching":
         # sets activity to "Watching activity_name"
-        await bot.change_presence(activity=Activity(type=ActivityType.watching, name=activity_name))
+        await bot.change_presence(
+            activity=Activity(type=ActivityType.watching, name=activity_name)
+        )
     else:
         # Sends a list of supported activities if one isn't given
-        await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching")
+        await ctx.send(
+            "Activity not supported. Supported Activities: Playing, Listening, Watching"
+        )
 
 
 @bot.command(name="meme", help="Dank Me Me")
@@ -269,7 +288,9 @@ async def send_meme(ctx: Context):
     Args:
         ctx (`Context`): Message context object from Discord
     """
-    random_meme = random.choice(os.listdir("Memes"))  # choose a random file from the "Memes" folder
+    random_meme = random.choice(
+        os.listdir("Memes")
+    )  # choose a random file from the "Memes" folder
     # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
     while random_meme == ".DS_Store":
         random_meme = random.choice(os.listdir("Memes"))
@@ -287,7 +308,9 @@ async def send_ping_response(ctx: Context) -> None:
     response = await ctx.send(embed=embed)
     # Calculate the time difference between ping request and pong response
     ping = (response.created_at - ctx.message.created_at).total_seconds() * 1000
-    embed.add_field(name=":ping_pong:", value=f"{int(ping)} ms")  # Add calculated ping to the embed
+    embed.add_field(
+        name=":ping_pong:", value=f"{int(ping)} ms"
+    )  # Add calculated ping to the embed
     await response.edit(embed=embed)  # edit response to include calculated ping (ms)
 
 
@@ -319,8 +342,12 @@ async def check_inventory(
 async def store_inventory(
     ctx: Context,
     item: str = parameter(description="The name of the item to store"),
-    description: str = parameter(default=None, description="A description of the stored item"),
-    quantity: int = parameter(default=1, description="The quantity of the item to store"),
+    description: str = parameter(
+        default=None, description="A description of the stored item"
+    ),
+    quantity: int = parameter(
+        default=1, description="The quantity of the item to store"
+    ),
 ) -> None:
     """Store items in inventory (write to inventory.json)
 
@@ -350,7 +377,9 @@ async def store_inventory(
 async def remove_inventory(
     ctx: Context,
     item: str = parameter(description="The name of the item to remove"),
-    quantity: int = parameter(default=None, description="The quantity of the item to remove"),
+    quantity: int = parameter(
+        default=None, description="The quantity of the item to remove"
+    ),
 ):
     """Remove items from inventory.json
 
@@ -368,7 +397,9 @@ async def remove_inventory(
 
     write_json("inventory.json", inventory)
 
-    response = f"Removed {'all' if quantity is None else quantity} {item} from your inventory."
+    response = (
+        f"Removed {'all' if quantity is None else quantity} {item} from your inventory."
+    )
 
     await ctx.send(response)
 
