@@ -1,5 +1,7 @@
 """Quotes to be used by VoloBot when responding to its name"""
 
+# ruff: noqa: E501
+
 QUOTES = [
     # Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
     "Volothamp Geddarm at your service.",
