@@ -10,7 +10,7 @@ from urllib.error import HTTPError
 
 from discord import Activity, ActivityType, Embed, File, Game, Intents, Message
 from discord.ext.commands import Bot, Context, parameter
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 from quotes import QUOTES
 from utils import (
@@ -30,7 +30,7 @@ from utils import (
 
 
 # Parse .env file
-load_dotenv()
+#load_dotenv()
 # Get DISCORD_TOKEN from token specified in the .env file
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -289,12 +289,12 @@ async def send_meme(ctx: Context):
         ctx (`Context`): Message context object from Discord
     """
     random_meme = random.choice(
-        os.listdir("Memes")
-    )  # choose a random file from the "Memes" folder
+        os.listdir("memes")
+    )  # choose a random file from the "memes" folder
     # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
     while random_meme == ".DS_Store":
-        random_meme = random.choice(os.listdir("Memes"))
-    await ctx.send(file=File(f"Memes/{random_meme}"))
+        random_meme = random.choice(os.listdir("memes"))
+    await ctx.send(file=File(f"memes/{random_meme}"))
 
 
 @bot.command(name="ping", help="Ping Volobot")
