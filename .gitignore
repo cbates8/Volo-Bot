@@ -1,6 +1,8 @@
 .DS_Store
-.env
 __pycache__
+
+
+.env
 .vscode
 inventory.json
 todo.txt
