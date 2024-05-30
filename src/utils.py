@@ -1,4 +1,5 @@
 """Utils for VoloBot"""
+
 import json
 from traceback import format_exception
 from typing import Any, Union
@@ -99,12 +100,9 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
     input_type = input_type.lower()
 
     for dmg_type in valid_types:
-        if (
-            input_type
-            in (
-                dmg_type,
-                dmg_type[:2],
-            )
+        if input_type in (
+            dmg_type,
+            dmg_type[:2],
         ):  # Includes abreviation support for damge types (spelling bludgeoning is hard!)
             return dmg_type
     return False
@@ -194,9 +192,7 @@ def get_ddb_spell(spell_name: str) -> Embed:
     spell_name = parsed_html.find("h1", class_="page-title").text
 
     # Get the spell description from the page content
-    spell_description = parsed_html.find("div", class_="more-info-content").get_text(
-        "\n\n", True
-    )
+    spell_description = parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
 
     # Create a dict to store spell information. Will be turned into an Embed later
     spell_dict = {"description": spell_description}
@@ -235,13 +231,7 @@ def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
         `str`: Scraped text from ddb
     """
     # Identify the item containing the information we want
-    item = parsed_html.find(
-        "div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}"
-    )
+    item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
 
     # Get all text containied in the value section of the statblock
-    return (
-        item.find("div", class_="ddb-statblock-item-value")
-        .get_text(";", True)
-        .split(";")[0]
-    )
+    return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]
