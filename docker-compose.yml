@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  volobot:
+      build: .
+      environment:
+        DISCORD_TOKEN: ${DISCORD_TOKEN}
+        DISCORD_GUILD: ${DISCORD_GUILD}
+      volumes:
+      - ./src:/src
