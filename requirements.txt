@@ -1,2 +1,4 @@
-discord.py
+aiocsv
+aiofiles
 beautifulsoup4
+discord.py
