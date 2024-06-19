@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from discord import Embed
 
-from utils.embed import dict_to_embed
+from src.utils.embed import dict_to_embed
 
 
 def get_ddb_spell(spell_name: str) -> Embed:

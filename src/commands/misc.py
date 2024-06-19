@@ -6,6 +6,8 @@ import random
 from discord import Embed, File
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
+from src.constants.paths import MEME_DIR
+
 
 class Misc(Cog):
     def __init__(self: "Misc", bot: Bot):
@@ -37,11 +39,11 @@ class Misc(Cog):
         Args:
             ctx (`Context`): Message context object from Discord
         """
-        random_meme = random.choice(os.listdir("memes"))  # choose a random file from the "memes" folder
+        random_meme = random.choice(os.listdir(MEME_DIR))  # choose a random file from the "memes" folder
         # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
         while random_meme == ".DS_Store":
-            random_meme = random.choice(os.listdir("memes"))
-        await ctx.send(file=File(f"memes/{random_meme}"))
+            random_meme = random.choice(os.listdir(MEME_DIR))
+        await ctx.send(file=File(f"{MEME_DIR}/{random_meme}"))
 
     @command(name="ping", help="Ping Volobot")
     async def send_ping(self: "Misc", ctx: Context) -> None:

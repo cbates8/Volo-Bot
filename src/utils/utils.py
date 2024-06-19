@@ -3,11 +3,11 @@
 import json
 from typing import Union
 
-COG_PATH = "commands.{cog}"
+from src.constants.paths import COG_PATH
 
 
 def get_cog_path(cog: str) -> str:
-    return COG_PATH.format(cog=cog)
+    return COG_PATH.format(cog=cog.lower())
 
 
 ###############################

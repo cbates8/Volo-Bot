@@ -4,9 +4,10 @@ from urllib.error import HTTPError
 
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from utils.embed import dict_to_embed
-from utils.spell import get_ddb_spell
-from utils.utils import load_json
+from src.constants.paths import SPELLS_PATH
+from src.utils.embed import dict_to_embed
+from src.utils.spell import get_ddb_spell
+from src.utils.utils import load_json
 
 
 class Spell(Cog):
@@ -36,7 +37,7 @@ class Spell(Cog):
 
         if source != "web":
             # Search local spell file for information
-            known_spells = load_json("spells.json")
+            known_spells = load_json(SPELLS_PATH)
 
             for spell in known_spells:
                 if spell_name.lower() == spell.lower():

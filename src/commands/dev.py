@@ -3,7 +3,7 @@
 from discord import Activity, ActivityType, Game
 from discord.ext.commands import Bot, Cog, Context, command, is_owner, parameter
 
-from utils.utils import get_cog_path
+from src.utils.utils import get_cog_path
 
 
 class Dev(Cog):
@@ -16,7 +16,7 @@ class Dev(Cog):
     async def load_cog(self: "Dev", ctx: Context, *, cog: str):
         """Command which Loads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-        path = get_cog_path(cog.lower())
+        path = get_cog_path(cog)
 
         try:
             await self.bot.load_extension(path)
@@ -30,7 +30,7 @@ class Dev(Cog):
     async def unload_cog(self: "Dev", ctx: Context, *, cog: str):
         """Command which Unloads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-        path = get_cog_path(cog.lower())
+        path = get_cog_path(cog)
 
         try:
             await self.bot.unload_extension(path)
@@ -44,7 +44,7 @@ class Dev(Cog):
     async def reload_cog(self: "Dev", ctx: Context, *, cog: str):
         """Command which Reloads a Module.
         Remember to use dot path. e.g: cogs.owner"""
-        path = get_cog_path(cog.lower())
+        path = get_cog_path(cog)
 
         try:
             await self.bot.unload_extension(path)

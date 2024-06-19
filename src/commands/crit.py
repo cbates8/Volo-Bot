@@ -4,7 +4,8 @@ import aiofiles
 from aiocsv import AsyncDictReader
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from utils.utils import validate_crit_percentage, validate_damage_type
+from src.constants.paths import CRIT_TABLE_PATH, FUMBLE_TABLE_PATH
+from src.utils.utils import validate_crit_percentage, validate_damage_type
 
 
 class Crit(Cog):
@@ -29,7 +30,7 @@ class Crit(Cog):
         if validate_crit_percentage(crit_percentage):
             # Opens 'Critical_Hit_Table.csv' and treats it as a dictionary.
             # First row treated as keys, with following rows each being its own set of values for those keys
-            async with aiofiles.open("Critical_Hit_Table.csv", mode="r", encoding="utf8") as csvfile:
+            async with aiofiles.open(CRIT_TABLE_PATH, mode="r", encoding="utf8") as csvfile:
                 csvreader = AsyncDictReader(csvfile)
                 fieldnames = await csvreader.get_fieldnames()
                 roll_values = fieldnames[0]
@@ -64,7 +65,7 @@ class Crit(Cog):
         if validate_crit_percentage(fumble_percentage):
             # Opens 'Critical_Hit_Table.csv' and treats it as a dictionary.
             # First row treated as keys, with following rows each being its own set of values for those keys
-            async with aiofiles.open("Fumble_Table.csv", mode="r", encoding="utf8") as csvfile:
+            async with aiofiles.open(FUMBLE_TABLE_PATH, mode="r", encoding="utf8") as csvfile:
                 csvreader = AsyncDictReader(csvfile)
                 fieldnames = await csvreader.get_fieldnames()
                 roll_values = fieldnames[0]

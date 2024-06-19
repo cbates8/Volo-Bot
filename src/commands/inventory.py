@@ -2,8 +2,9 @@
 
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from utils.embed import dict_to_embed
-from utils.utils import load_json, write_json
+from src.constants.paths import INVENTORY_PATH
+from src.utils.embed import dict_to_embed
+from src.utils.utils import load_json, write_json
 
 
 class Inventory(Cog):
@@ -26,7 +27,7 @@ class Inventory(Cog):
             ctx (`Context`): Message context object from Discord
             item (`str`, optional): The name of the inventory item to list. If ommitted, entire inventory will be listed. Defaults to `None`.
         """
-        inventory = load_json("inventory.json")
+        inventory = load_json(INVENTORY_PATH)
 
         if item is None:
             embed = dict_to_embed("Inventory", inventory)
@@ -51,7 +52,7 @@ class Inventory(Cog):
             description (`str`, optional): A description of the stored item. Defaults to `None`.
             quantity (`int`, optional): The quantity of the item to store. Defaults to '1'.
         """
-        inventory = load_json("inventory.json")
+        inventory = load_json(INVENTORY_PATH)
 
         if item in inventory.keys():
             inventory[item]["quantity"] += quantity
@@ -60,7 +61,7 @@ class Inventory(Cog):
         else:
             inventory[item] = {"description": description, "quantity": quantity}
 
-        write_json("inventory.json", inventory)
+        write_json(INVENTORY_PATH, inventory)
 
         response = f"Added {quantity} {item} to your inventory."
 
@@ -80,14 +81,14 @@ class Inventory(Cog):
             item (`str`): Item to remove from the inventory
             quantity (`int`, optional): The quantity of items to remove. Defaults to `None` (Removes all items).
         """
-        inventory = load_json("inventory.json")
+        inventory = load_json(INVENTORY_PATH)
 
         if quantity is None or quantity >= inventory[item]["quantity"]:
             del inventory[item]
         else:
             inventory[item]["quantity"] -= quantity
 
-        write_json("inventory.json", inventory)
+        write_json(INVENTORY_PATH, inventory)
 
         response = f"Removed {'all' if quantity is None else quantity} {item} from your inventory."
 
