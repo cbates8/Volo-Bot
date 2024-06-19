@@ -39,6 +39,9 @@ build-nc:
 
 rebuild-nc: down build-nc up
 
+logs:
+	@docker-compose logs volobot
+
 
 #################
 # General Utils #
@@ -48,7 +51,7 @@ rebuild-nc: down build-nc up
 # Install requirements.txt to venv
 install:
 	@. .venv/bin/activate; \
-	pip install -r shared/requirements.txt; \
+	pip install -r requirements.txt; \
 
 
 ###############
