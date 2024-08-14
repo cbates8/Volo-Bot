@@ -62,7 +62,7 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
 #################################
 
 
-def load_json(file_path: str) -> Union[list, dict]:
+async def load_json(file_path: str) -> Union[list, dict]:
     """Open and deserialize a JSON file to a Python object
 
     Args:
@@ -71,17 +71,18 @@ def load_json(file_path: str) -> Union[list, dict]:
     Returns:
         `Union[list, dict]`: Deserialized JSON as a Python object
     """
-    with open(file_path, mode="r", encoding="utf8") as jsonfile:
-        deserialized_json = json.load(jsonfile)
+    async with aiofiles.open(file_path, mode="r", encoding="utf8") as jsonfile:
+        raw_json = await jsonfile.read()
+    deserialized_json = json.loads(raw_json)
     return deserialized_json
 
 
-def write_json(file_path: str, content: Union[list, dict]) -> None:
+async def write_json(file_path: str, content: Union[list, dict]) -> None:
     """Serialize a Python object to a JSON string and write to a file
 
     Args:
         file_path (`str`): Path to JSON file
         content (`Union[list, dict]`): Python object to convert to JSON
     """
-    with open(file_path, mode="w", encoding="utf8") as jsonfile:
-        jsonfile.write(json.dumps(content, indent=4))
+    async with aiofiles.open(file_path, mode="w", encoding="utf8") as jsonfile:
+        await jsonfile.write(json.dumps(content, indent=4))
