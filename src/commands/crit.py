@@ -4,8 +4,8 @@ import aiofiles
 from aiocsv import AsyncDictReader
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from src.constants.paths import CRIT_TABLE_PATH, FUMBLE_TABLE_PATH
-from src.utils.utils import validate_crit_percentage, validate_damage_type
+from constants.paths import CRIT_TABLE_PATH, FUMBLE_TABLE_PATH
+from utils.utils import validate_crit_percentage, validate_damage_type
 
 
 class Crit(Cog):

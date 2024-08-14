@@ -2,9 +2,9 @@
 
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from src.constants.paths import INVENTORY_PATH
-from src.utils.embed import dict_to_embed
-from src.utils.utils import load_json, write_json
+from constants.paths import INVENTORY_PATH
+from utils.embed import dict_to_embed
+from utils.utils import load_json, write_json
 
 
 class Inventory(Cog):

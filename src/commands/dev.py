@@ -3,7 +3,7 @@
 from discord import Activity, ActivityType, Game
 from discord.ext.commands import Bot, Cog, Context, command, is_owner, parameter
 
-from src.utils.utils import get_cog_path
+from utils.utils import get_cog_path
 
 
 class Dev(Cog):

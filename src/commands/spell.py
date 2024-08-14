@@ -4,10 +4,10 @@ from urllib.error import HTTPError
 
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from src.constants.paths import SPELLS_PATH
-from src.utils.embed import dict_to_embed
-from src.utils.spell import get_ddb_spell
-from src.utils.utils import load_json
+from constants.paths import SPELLS_PATH
+from utils.embed import dict_to_embed
+from utils.spell import get_ddb_spell
+from utils.utils import load_json
 
 
 class Spell(Cog):

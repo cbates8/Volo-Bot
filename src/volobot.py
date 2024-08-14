@@ -10,9 +10,9 @@ from typing import Any
 from discord import Game, Intents, Message
 from discord.ext.commands import Bot, Context
 
-from src.constants.quotes import QUOTES
-from src.utils.embed import create_error_embed
-from src.utils.logging import get_logger
+from constants.quotes import QUOTES
+from utils.embed import create_error_embed
+from utils.logging import get_logger
 
 LOGGER = get_logger(os.path.basename(__file__))
 

@@ -6,7 +6,7 @@ import random
 from discord import Embed, File
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from src.constants.paths import MEME_DIR
+from constants.paths import MEME_DIR
 
 
 class Misc(Cog):
