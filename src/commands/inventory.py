@@ -8,8 +8,14 @@ from src.utils.utils import load_json, write_json
 
 
 class Inventory(Cog):
+    """Cog defining commands related to inventory management"""
 
-    def __init__(self: "Inventory", bot: Bot):
+    def __init__(self: "Inventory", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
         self.bot = bot
 
     @command(name="bag", help="Check the party's inventory")
@@ -73,7 +79,7 @@ class Inventory(Cog):
         ctx: Context,
         item: str = parameter(description="The name of the item to remove"),
         quantity: int = parameter(default=None, description="The quantity of the item to remove"),
-    ):
+    ) -> None:
         """Remove items from inventory.json
 
         Args:
@@ -95,5 +101,10 @@ class Inventory(Cog):
         await ctx.send(response)
 
 
-async def setup(bot: Bot):
+async def setup(bot: Bot) -> None:
+    """Setup Cog
+
+    Args:
+        bot (`Bot`): Discord Bot object
+    """
     await bot.add_cog(Inventory(bot))

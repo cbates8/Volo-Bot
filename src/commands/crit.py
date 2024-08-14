@@ -9,8 +9,14 @@ from src.utils.utils import validate_crit_percentage, validate_damage_type
 
 
 class Crit(Cog):
+    """Cog defining commands related to critical hits and misses"""
 
-    def __init__(self: "Crit", bot: Bot):
+    def __init__(self: "Crit", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
         self.bot = bot
 
     @command(name="crit", help="Search the critical hit table")
@@ -81,5 +87,10 @@ class Crit(Cog):
         await ctx.send(response)
 
 
-async def setup(bot: Bot):
+async def setup(bot: Bot) -> None:
+    """Setup Cog
+
+    Args:
+        bot (`Bot`): Discord Bot object
+    """
     await bot.add_cog(Crit(bot))

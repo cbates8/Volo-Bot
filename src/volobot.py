@@ -1,4 +1,4 @@
-"""Event and command definitions for VoloBot: the worlds best D&D Discord bot!
+"""Event and command definitions for VoloBot: The best D&D Discord bot in the multiverse!
 Author: Casey Bates
 GitHub: https://github.com/cbates8/Volo-Bot
 """
@@ -20,7 +20,7 @@ LOGGER = get_logger(os.path.basename(__file__))
 ### BOT SETUP ###
 #################
 
-# Get DISCORD_TOKEN from token specified in the .env file
+# Get DISCORD_TOKEN from env var
 TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Define command prefix
@@ -35,17 +35,32 @@ DESCRIPTION = """A Dungeons and Dragons bot based on Volothamp Geddarm.
 
 Capable of rolling dice, checking critical hit tables, and more!"""
 
+# Cogs the bot should start with
 INITIAL_EXTENSIONS = ["commands.crit", "commands.dev", "commands.inventory", "commands.misc", "commands.spell"]
 
 
 class VoloBot(Bot):
-    """Represents VoloBot, a D&D Discord Bot"""
+    """VoloBot, a D&D Discord Bot"""
 
-    def __init__(self, extensions, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self: "VoloBot", extensions: str, **kwargs) -> None:
+        """Initialize Volobot, pass kwargs to Bot constructor
+
+        Args:
+            extensions (`str`): List of extensions (cogs) to load
+        """
+        super().__init__(**kwargs)  # Pass kwargs to Bot constructor
         self.initial_extensions = extensions
 
-    async def setup_hook(self) -> None:
+    async def setup_hook(self: "VoloBot") -> None:
+        """A coroutine to be called to setup the bot.
+
+        In our case, that means loading our initial extensions (cogs).
+
+        Will be executed after the bot is logged in but before it has connected to the Websocket.
+        This is only called once, in login, and will be called before any events are dispatched,
+        making it a better solution than doing such setup in the `~discord.on_ready` event.
+
+        """
         for extension in self.initial_extensions:
             await bot.load_extension(extension)
 

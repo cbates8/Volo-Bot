@@ -11,8 +11,14 @@ from src.utils.utils import load_json
 
 
 class Spell(Cog):
+    """Cog defining commands related to spellcasting"""
 
-    def __init__(self: "Spell", bot: Bot):
+    def __init__(self: "Spell", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
         self.bot = bot
 
     @command(name="spell", help="Search spell descriptions")
@@ -62,5 +68,10 @@ class Spell(Cog):
                 await ctx.send(response)
 
 
-async def setup(bot: Bot):
+async def setup(bot: Bot) -> None:
+    """Setup Cog
+
+    Args:
+        bot (`Bot`): Discord Bot object
+    """
     await bot.add_cog(Spell(bot))

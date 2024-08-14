@@ -7,15 +7,27 @@ from src.utils.utils import get_cog_path
 
 
 class Dev(Cog):
+    """Cog defining developer commands.
+    These commands are hidden and will only be available to users with elevated permissions
+    """
 
-    def __init__(self: "Dev", bot: Bot):
+    def __init__(self: "Dev", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
         self.bot = bot
 
     @command(name="load", hidden=True)
     @is_owner()
-    async def load_cog(self: "Dev", ctx: Context, *, cog: str):
-        """Command which Loads a Module.
-        Remember to use dot path. e.g: cogs.owner"""
+    async def load_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
+        """Command which Loads a Module
+
+        Args:
+            ctx (`Context`): Message context object from Discord
+            cog (`str`): Name of the cog to unload
+        """
         path = get_cog_path(cog)
 
         try:
@@ -27,9 +39,13 @@ class Dev(Cog):
 
     @command(name="unload", hidden=True)
     @is_owner()
-    async def unload_cog(self: "Dev", ctx: Context, *, cog: str):
-        """Command which Unloads a Module.
-        Remember to use dot path. e.g: cogs.owner"""
+    async def unload_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
+        """Command which Unloads a Module
+
+        Args:
+            ctx (`Context`): Message context object from Discord
+            cog (`str`): Name of the cog to unload
+        """
         path = get_cog_path(cog)
 
         try:
@@ -41,9 +57,13 @@ class Dev(Cog):
 
     @command(name="reload", hidden=True)
     @is_owner()
-    async def reload_cog(self: "Dev", ctx: Context, *, cog: str):
-        """Command which Reloads a Module.
-        Remember to use dot path. e.g: cogs.owner"""
+    async def reload_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
+        """Command which Reloads a Module
+
+        Args:
+            ctx (`Context`): Message context object from Discord
+            cog (`str`): Name of the cog to unload
+        """
         path = get_cog_path(cog)
 
         try:
@@ -83,5 +103,10 @@ class Dev(Cog):
             await ctx.send("Activity not supported. Supported Activities: Playing, Listening, Watching")
 
 
-async def setup(bot: Bot):
+async def setup(bot: Bot) -> None:
+    """Setup Cog
+
+    Args:
+        bot (`Bot`): Discord Bot object
+    """
     await bot.add_cog(Dev(bot))

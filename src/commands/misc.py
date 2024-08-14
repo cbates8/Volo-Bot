@@ -10,7 +10,14 @@ from src.constants.paths import MEME_DIR
 
 
 class Misc(Cog):
-    def __init__(self: "Misc", bot: Bot):
+    """Cog defining miscellaneous commands that don't quite fit in any other category"""
+
+    def __init__(self: "Misc", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
         self.bot = bot
 
     @command(name="roll", help="Roll virtual dice")
@@ -33,7 +40,7 @@ class Misc(Cog):
         await ctx.send(", ".join(dice))
 
     @command(name="meme", help="Dank Me Me")
-    async def send_meme(self: "Misc", ctx: Context):
+    async def send_meme(self: "Misc", ctx: Context) -> None:
         """Sends a meme to context
 
         Args:
@@ -60,5 +67,10 @@ class Misc(Cog):
         await response.edit(embed=embed)  # edit response to include calculated ping (ms)
 
 
-async def setup(bot: Bot):
+async def setup(bot: Bot) -> None:
+    """Setup Cog
+
+    Args:
+        bot (`Bot`): Discord Bot object
+    """
     await bot.add_cog(Misc(bot))
