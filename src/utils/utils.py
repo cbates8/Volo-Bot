@@ -1,8 +1,9 @@
 """Utils for VoloBot"""
 
-import aiofiles
 import json
 from typing import Union
+
+import aiofiles
 
 from constants.paths import COG_PATH
 
