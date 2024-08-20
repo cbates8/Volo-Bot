@@ -83,6 +83,7 @@ class Dev(Cog):
         activity_name: str = parameter(description="Description of activity to be displayed"),
     ) -> None:
         """Set the bot's Discord activity status
+        await bot.change_presence(activity=discord.CustomActivity(name="Reading \'Volo\'s Guide to Monsters\'", emoji=None, type=discord.ActivityType.custom))
 
         Args:
             ctx (`Context`): Message context object from Discord
