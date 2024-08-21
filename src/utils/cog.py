@@ -35,10 +35,10 @@ def get_modules() -> list[str]:
         `list[str]`: List of our custom Python modules
     """
     modules = list()
-    for dir in MODULES_TO_RELOAD:
-        for file in os.listdir(dir):
+    for module in MODULES_TO_RELOAD:
+        for file in os.listdir(module):
             if file.endswith(".py") and "__" not in file:
-                module_path = f"{dir}.{file.split('.')[0]}"
+                module_path = f"{module}.{file.split('.')[0]}"
                 modules.append(module_path)
     return modules
 
