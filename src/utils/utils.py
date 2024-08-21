@@ -8,17 +8,6 @@ import aiofiles
 from constants.paths import COG_PATH
 
 
-def get_cog_path(cog: str) -> str:
-    """Get dot path of a cog
-    e.g. `spell` -> `commands.spell`
-
-    Args:
-        cog (`str`): Name of a cog
-
-    Returns:
-        `str`: Dot path of a cog
-    """
-    return COG_PATH.format(cog=cog.lower())
 
 
 ###############################

@@ -3,7 +3,7 @@
 from discord import Activity, ActivityType, Game
 from discord.ext.commands import Bot, Cog, Context, command, is_owner, parameter
 
-from utils.utils import get_cog_path
+from utils.cog import get_cog_path, reload_modules
 
 
 class Dev(Cog):
@@ -68,6 +68,7 @@ class Dev(Cog):
 
         try:
             await self.bot.unload_extension(path)
+            reload_modules()
             await self.bot.load_extension(path)
         except Exception as e:
             await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")

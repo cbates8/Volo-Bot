@@ -4,8 +4,10 @@
 # Directories #
 ###############
 
+CONSTANTS_DIR = "constants"
 DATA_DIR = "data"
 MEME_DIR = "memes"  # should it be data/memes? Do memes count as 'data'?
+UTILS_DIR = "utils"
 
 
 #########
