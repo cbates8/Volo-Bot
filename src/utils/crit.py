@@ -1,19 +1,10 @@
-"""Utils for VoloBot"""
+"""Critical Hit/Miss Utils"""
 
-import json
 from typing import Union
 
-import aiofiles
-
-from constants.paths import COG_PATH
-
-
-
-
-###############################
-### Input validation utils ####
-###############################
-
+#########################
+### Input Validation ####
+#########################
 
 def validate_crit_percentage(input_percentage: int) -> bool:
     """Validate user input crit percentage.
@@ -45,5 +36,3 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
         if input_type in (dmg_type, dmg_type[:2]):
             return dmg_type
     return False
-
-
