@@ -1,9 +1,11 @@
-"""Quotes to be used by VoloBot when responding to its name"""
+"""Quotes to be used by VoloBot when responding to its name
+
+Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
+"""
 
 # ruff: noqa: E501
 
 QUOTES = [
-    # Taken from the commentary in his fantastical dissertation: 'Volo's Guide to Monsters'
     "Volothamp Geddarm at your service.",
     "When beholders dream of beholders, that's when the trouble starts",
     "A beholder always has several backup plans ready. When dealing with one, I have three plans of my own; run, hide, and distract. Rival adventurers are always a good distraction, Rival beholders are the best one.",

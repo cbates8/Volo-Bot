@@ -16,7 +16,6 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     Returns:
         `Embed`: Discord Embed object
     """
-
     embed = Embed(title=title)
     for key, value in content.items():
         if key == "description":
