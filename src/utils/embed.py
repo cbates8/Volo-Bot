@@ -1,9 +1,6 @@
 """Discord Embed Utils"""
 
-from typing import Any
-
 from discord import Embed
-from discord.ext.commands import BadArgument, MissingRequiredArgument, TooManyArguments
 
 
 def dict_to_embed(title: str, content: dict) -> Embed:
@@ -32,36 +29,19 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     return embed
 
 
-def create_error_embed(error: Any) -> Embed:
+def create_error_embed(error: Exception) -> Embed:
     """Create a Discord Embed describing a Python Exception
 
     Args:
-        error (`Any`): An error encountered by the program
+        error (`Exception`): An error encountered by the program
 
     Returns:
         `Embed`: A Discord embed object with a description of the error, as well as traceback
     """
     embed = Embed(title="I've encountered an error:")
-
-    if isinstance(error, BadArgument):
-        embed.add_field(
-            name="Bad Argument",
-            value="An argument was passed as an incorrect type.",
-            inline=False,
-        )
-    elif isinstance(error, MissingRequiredArgument):
-        embed.add_field(
-            name="Missing Required Argument",
-            value="Send '!help <command>' to learn more about a command.",
-            inline=False,
-        )
-    elif isinstance(error, TooManyArguments):
-        embed.add_field(
-            name="Too Many Arguments",
-            value="Send '!help <command>' to learn more about a command.",
-            inline=False,
-        )
-    else:
-        embed.add_field(name="Exception Thrown", value="Yikes!", inline=False)
-    embed.add_field(name="Error Text:", value=f"`{error}`", inline=False)
+    embed.add_field(
+        name=type(error).__name__,
+        value=f"`{error}`",
+        inline=False,
+    )
     return embed

@@ -1,9 +1,15 @@
 """Developer Commands"""
 
+import os
+
 from discord import Activity, ActivityType, Game
 from discord.ext.commands import Bot, Cog, Context, command, is_owner, parameter
 
 from utils.cog import get_cog_path, reload_modules
+from utils.embed import create_error_embed
+from utils.logging import get_logger
+
+LOGGER = get_logger(os.path.basename(__file__))
 
 
 class Dev(Cog):
@@ -32,8 +38,10 @@ class Dev(Cog):
 
         try:
             await self.bot.load_extension(path)
-        except Exception as e:
-            await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
+        except Exception as error:
+            LOGGER.exception(error, exc_info=error)
+            embed = create_error_embed(error)
+            await ctx.send(embed=embed)
         else:
             await ctx.send("**`SUCCESS`**")
 
@@ -50,8 +58,10 @@ class Dev(Cog):
 
         try:
             await self.bot.unload_extension(path)
-        except Exception as e:
-            await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
+        except Exception as error:
+            LOGGER.exception(error, exc_info=error)
+            embed = create_error_embed(error)
+            await ctx.send(embed=embed)
         else:
             await ctx.send("**`SUCCESS`**")
 
@@ -70,8 +80,10 @@ class Dev(Cog):
             await self.bot.unload_extension(path)
             reload_modules()
             await self.bot.load_extension(path)
-        except Exception as e:
-            await ctx.send(f"**`ERROR:`** {type(e).__name__} - {e}")
+        except Exception as error:
+            LOGGER.exception(error, exc_info=error)
+            embed = create_error_embed(error)
+            await ctx.send(embed=embed)
         else:
             await ctx.send("**`SUCCESS`**")
 
