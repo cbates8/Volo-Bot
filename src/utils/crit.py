@@ -7,10 +7,6 @@ from aiocsv import AsyncDictReader
 
 from constants.paths import CRIT_TABLE_PATH, FUMBLE_TABLE_PATH
 
-#########################
-### Input Validation ####
-#########################
-
 
 def validate_crit_percentage(input_percentage: int) -> bool:
     """Validate user input crit percentage.
@@ -44,8 +40,38 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
     return False
 
 
+async def read_crit_csv_async(path: str) -> tuple[list[str], dict[int, dict]]:
+    """Read from CSV representing a critical hit/miss table
+
+    Result will look like the following:
+    {
+        1: {"slashing": "slashing description", "bludgeoning": "bludgeoning description", ...},
+        2: {"slashing": "slashing description", "bludgeoning": "bludgeoning description", ...},
+        ...
+    }
+
+    Args:
+        path (`str`): Path to the CSV
+
+    Returns:
+        `tuple[list[str], dict[int, dict]]`: List of CSV headers, CSV data as dict of dicts
+    """
+    async with aiofiles.open(path, mode="r", encoding="utf8") as csvfile:
+        csvreader = AsyncDictReader(csvfile)
+        fieldnames = await csvreader.get_fieldnames()
+        # Identify header for the "Roll" column
+        # Roll integers (1-100) will become keys of the resulting dict
+        roll_column = fieldnames[0]
+        # Separate remaining column headers
+        headers = fieldnames[1:]
+        # Create dictionary from CSV data
+        # Each item will consist of the roll as the key and dict representation of remaining columns as the value
+        data = {int(row.pop(roll_column)): row async for row in csvreader}
+    return headers, data
+
+
 async def get_crit_result(crit_percentage: int, dmg_type: str) -> str:
-    """Get critical hit result given a percentage and damage type
+    """Get critical hit result
 
     Args:
         crit_percentage (`int`): Percentage representing critical hit severity
@@ -55,31 +81,19 @@ async def get_crit_result(crit_percentage: int, dmg_type: str) -> str:
         `str`: Description of the crit result
     """
     if validate_crit_percentage(crit_percentage):
-        # Opens 'Critical_Hit_Table.csv' and treats it as a dictionary.
-        # First row treated as keys, with following rows each being its own set of values for those keys
-        async with aiofiles.open(CRIT_TABLE_PATH, mode="r", encoding="utf8") as csvfile:
-            csvreader = AsyncDictReader(csvfile)
-            fieldnames = await csvreader.get_fieldnames()
-            roll_values = fieldnames[0]
-            valid_dmg_types = fieldnames[1:]
-
-            dmg_type = validate_damage_type(valid_dmg_types, dmg_type)
-            if dmg_type:
-                async for row in csvreader:
-                    # Uses 'row' as the dictionary identifier and finds the value assigned to key 'dmg_type'
-                    if int(row[roll_values]) == crit_percentage:
-                        response = row[dmg_type]
-                        break
-            else:
-                # using chr(10) as newline, because f-string doesn't support \n in expression part
-                response = f"**Error:** Invalid Damage Type\nSupported types: ```\n{chr(10).join(valid_dmg_types)}```"
+        valid_dmg_types, crit_table = await read_crit_csv_async(CRIT_TABLE_PATH)
+        if clean_dmg_type := validate_damage_type(valid_dmg_types, dmg_type):
+            response = crit_table[crit_percentage][clean_dmg_type]
+        else:
+            # using chr(10) as newline, because f-string doesn't support \n in expression part
+            response = f"**Error:** Invalid Damage Type\nSupported types: ```\n{chr(10).join(valid_dmg_types)}```"
     else:
         response = "**Error:** Invalid Percentage Roll\nMust be value from 1-100"
     return response
 
 
 async def get_fumble_result(fumble_percentage: int) -> str:
-    """Get critical miss result given a percentage
+    """Get critical miss result
 
     Args:
         fumble_percentage (`int`): Percentage representing critical miss severity
@@ -88,19 +102,9 @@ async def get_fumble_result(fumble_percentage: int) -> str:
         `str`: Description of the fumble result
     """
     if validate_crit_percentage(fumble_percentage):
-        # Opens 'Critical_Hit_Table.csv' and treats it as a dictionary.
-        # First row treated as keys, with following rows each being its own set of values for those keys
-        async with aiofiles.open(FUMBLE_TABLE_PATH, mode="r", encoding="utf8") as csvfile:
-            csvreader = AsyncDictReader(csvfile)
-            fieldnames = await csvreader.get_fieldnames()
-            roll_values = fieldnames[0]
-            fumble_effects = fieldnames[1]
-
-            async for row in csvreader:
-                # Uses 'row' as the dictionary identifier and finds the value assigned to key 'fumble_effects'
-                if int(row[roll_values]) == fumble_percentage:
-                    response = row[fumble_effects]
-                    break
+        headers, fumble_table = await read_crit_csv_async(FUMBLE_TABLE_PATH)
+        fumble_column = headers[0]
+        response = fumble_table[fumble_percentage][fumble_column]
     else:
         response = "**Error:** Invalid Percentage Roll\nMust be value from 1-100"
     return response
