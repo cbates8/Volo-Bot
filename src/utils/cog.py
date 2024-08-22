@@ -44,6 +44,8 @@ def get_modules() -> list[str]:
 
 
 def reload_modules() -> None:
-    """Reload Python modules"""
+    """Reload Python modules
+    https://github.com/Rapptz/discord.py/discussions/9051#discussioncomment-4076913
+    """
     for module in get_modules():
         sys.modules[module] = importlib.reload(sys.modules[module])
