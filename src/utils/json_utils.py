@@ -6,7 +6,7 @@ from typing import Union
 import aiofiles
 
 
-async def load_json_async(file_path: str) -> Union[list, dict]:
+async def read_json_async(file_path: str) -> Union[list, dict]:
     """Open and deserialize a JSON file to a Python object
 
     Args:

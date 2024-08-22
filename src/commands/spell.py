@@ -6,7 +6,7 @@ from discord.ext.commands import Bot, Cog, Context, command, parameter
 
 from constants.paths import SPELLS_PATH
 from utils.embed import dict_to_embed
-from utils.json_utils import load_json_async
+from utils.json_utils import read_json_async
 from utils.spell import get_ddb_spell
 
 
@@ -43,7 +43,7 @@ class Spell(Cog):
 
         if source != "web":
             # Search local spell file for information
-            known_spells = load_json_async(SPELLS_PATH)
+            known_spells = read_json_async(SPELLS_PATH)
 
             for spell in known_spells:
                 if spell_name.lower() == spell.lower():
