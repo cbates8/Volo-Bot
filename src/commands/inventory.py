@@ -2,9 +2,7 @@
 
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
-from constants.paths import INVENTORY_PATH
-from utils.embed import dict_to_embed
-from utils.json_utils import read_json_async, write_json_async
+from utils.inventory import get_item, remove_item, store_item
 
 
 class Inventory(Cog):
@@ -33,41 +31,29 @@ class Inventory(Cog):
             ctx (`Context`): Message context object from Discord
             item (`str`, optional): The name of the inventory item to list. If ommitted, entire inventory will be listed. Defaults to `None`.
         """
-        inventory = await read_json_async(INVENTORY_PATH)
-
-        if not item:
-            embed = dict_to_embed("Inventory", inventory)
+        if embed := await get_item(item):
+            await ctx.send(embed=embed)
         else:
-            embed = dict_to_embed(item, inventory[item])
-
-        await ctx.send(embed=embed)
+            response = f"Could not find item '{item}' in your inventory."
+            await ctx.send(response)
 
     @command(name="store", help="Store items in the party's inventory")
     async def store_inventory(
         self: "Inventory",
         ctx: Context,
         item: str = parameter(description="The name of the item to store"),
-        description: str = parameter(default=None, description="A description of the stored item"),
         quantity: int = parameter(default=1, description="The quantity of the item to store"),
+        description: str = parameter(default=None, description="A description of the stored item"),
     ) -> None:
         """Store items in inventory (write to inventory.json)
 
         Args:
             ctx (`Context`): Message context object from Discord
             item (`str`): The name of the item to store
-            description (`str`, optional): A description of the stored item. Defaults to `None`.
             quantity (`int`, optional): The quantity of the item to store. Defaults to '1'.
+            description (`str`, optional): A description of the stored item. Defaults to `None`.
         """
-        inventory = await read_json_async(INVENTORY_PATH)
-
-        if item in inventory.keys():
-            inventory[item]["quantity"] += quantity
-            if description is not None:
-                inventory[item]["description"] = description
-        else:
-            inventory[item] = {"description": description, "quantity": quantity}
-
-        await write_json_async(INVENTORY_PATH, inventory)
+        await store_item(item, quantity, description)
 
         response = f"Added {quantity} {item} to your inventory."
 
@@ -87,14 +73,7 @@ class Inventory(Cog):
             item (`str`): Item to remove from the inventory
             quantity (`int`, optional): The quantity of items to remove. Defaults to `None` (Removes all items).
         """
-        inventory = await read_json_async(INVENTORY_PATH)
-
-        if quantity is None or quantity >= inventory[item]["quantity"]:
-            del inventory[item]
-        else:
-            inventory[item]["quantity"] -= quantity
-
-        await write_json_async(INVENTORY_PATH, inventory)
+        await remove_item(item, quantity)
 
         response = f"Removed {'all' if quantity is None else quantity} {item} from your inventory."
 
