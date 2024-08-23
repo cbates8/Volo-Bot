@@ -1,5 +1,6 @@
 """Spell Commands"""
 
+from discord import Embed
 from discord.ext.commands import Bot, Cog, Context, command, parameter
 
 from utils.spell import get_spell
@@ -31,7 +32,10 @@ class Spell(Cog):
             source (`str`, optional): The source to check for spell info. Defaults to 'all'
         """
         response = await get_spell(spell_name, source)
-        await ctx.send(response)
+        if isinstance(response, Embed):
+            await ctx.send(embed=response)
+        else:
+            await ctx.send(response)
 
 
 async def setup(bot: Bot) -> None:

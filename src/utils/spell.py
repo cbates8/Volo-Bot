@@ -24,9 +24,9 @@ SPELL_ATTRIBUTES = {
     "Attack/Save": "attack-save",
     "Damage Type": "damage-effect",
 }
-ONLINE_SOURCES = ["all", "web"]
 LOCAL_SOURCES = ["all", "local"]
-VALID_SOURCES = ONLINE_SOURCES + LOCAL_SOURCES
+ONLINE_SOURCES = ["all", "web"]
+VALID_SOURCES = ["all", "local", "web"]
 
 
 def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
@@ -115,7 +115,7 @@ async def get_spell(spell_name: str, source: str = "all") -> Union[str, Embed]:
     # Validate source
     source = source.lower()
     if source not in VALID_SOURCES:
-        return f"**Error:** Invalid Source '{source}'\nMust be one of {", ".join(VALID_SOURCES)}"
+        return f"**Error:** Invalid Source '{source}'\nMust be one of: `{' | '.join(VALID_SOURCES)}`"
 
     # Check for the spell locally
     if source in LOCAL_SOURCES:
