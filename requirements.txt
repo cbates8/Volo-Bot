@@ -1,3 +1,4 @@
-discord.py
-python-dotenv
+aiocsv
+aiofiles
 beautifulsoup4
+discord.py

@@ -1,0 +1,101 @@
+Roll,Fumbles
+1,Lose 1d4 attacks/actions/reactions
+2,Lose 1d4 attacks/actions/reactions
+3,Lose 1d4 attacks/actions/reactions
+4,Lose 1d4 attacks/actions/reactions
+5,Lose 1d4 attacks/actions/reactions
+6,Lose 1d4 attacks/actions/reactions
+7,Lose 1d4 attacks/actions/reactions
+8,Lose 1d4 attacks/actions/reactions
+9,Lose 1d4 attacks/actions/reactions
+10,Lose 1d4 attacks/actions/reactions
+11,Lose 1d4 attacks/actions/reactions
+12,Lose 1d4 attacks/actions/reactions
+13,Lose 1d4 attacks/actions/reactions
+14,Lose 1d4 attacks/actions/reactions
+15,Lose 1d4 attacks/actions/reactions
+16,Lose 1d4 attacks/actions/reactions
+17,Lose 1d4 attacks/actions/reactions
+18,Lose 1d4 attacks/actions/reactions
+19,Lose 1d4 attacks/actions/reactions
+20,Lose 1d4 attacks/actions/reactions
+21,Lose 1d4 attacks/actions/reactions
+22,Lose 1d4 attacks/actions/reactions
+23,Lose 1d4 attacks/actions/reactions
+24,Lose 1d4 attacks/actions/reactions
+25,Lose 1d4 attacks/actions/reactions
+26,Lose 1d4 attacks/actions/reactions
+27,Lose 1d4 attacks/actions/reactions
+28,Lose 1d4 attacks/actions/reactions
+29,Lose 1d4 attacks/actions/reactions
+30,Lose 1d4 attacks/actions/reactions
+31,Lose 1d4 attacks/actions/reactions
+32,Lose 2d4 attacks/actions/reactions 
+33,Lose 2d4 attacks/actions/reactions 
+34,Lose 2d4 attacks/actions/reactions 
+35,Lose 2d4 attacks/actions/reactions 
+36,Lose 2d4 attacks/actions/reactions 
+37,Lose 2d4 attacks/actions/reactions 
+38,Lose 2d4 attacks/actions/reactions 
+39,Lose 2d4 attacks/actions/reactions 
+40,Lose 2d4 attacks/actions/reactions 
+41,Lose 2d4 attacks/actions/reactions 
+42,Lose 2d4 attacks/actions/reactions 
+43,Lose 2d4 attacks/actions/reactions 
+44,Lose 2d4 attacks/actions/reactions 
+45,Lose 2d4 attacks/actions/reactions 
+46,Lose 2d4 attacks/actions/reactions 
+47,Lose 2d4 attacks/actions/reactions 
+48,Lose 2d4 attacks/actions/reactions 
+49,Lose 2d4 attacks/actions/reactions 
+50,Lose 2d4 attacks/actions/reactions 
+51,Lose 2d4 attacks/actions/reactions 
+52,Lose 2d4 attacks/actions/reactions 
+53,Lose 2d4 attacks/actions/reactions 
+54,Lose 2d4 attacks/actions/reactions 
+55,Lose 2d4 attacks/actions/reactions 
+56,Lose 2d4 attacks/actions/reactions 
+57,Lose 2d4 attacks/actions/reactions 
+58,Lose 2d4 attacks/actions/reactions 
+59,Lose 2d4 attacks/actions/reactions 
+60,Lose 2d4 attacks/actions/reactions 
+61,Lose 2d4 attacks/actions/reactions 
+62,Lose 2d4 attacks/actions/reactions 
+63,Lose 2d4 attacks/actions/reactions 
+64,Lose 2d4 attacks/actions/reactions 
+65,"Slip, roll DEX or less on d20  or fall and stunned 1d4  turns."
+66,"Stumble, roll DEX or less on d20  or fall and stunned 1d6  turns."
+67,Trip and fall prone.
+68,Trip and fall; stunned 1-6 turns.
+69,Trip and fall; stunned 1-6 turns.
+70,"Off balance, roll DEX or less on d20, or no actions next turn."
+71,"Lose grip on weapon, roll DEX or less on d20  or no attack next turn."
+72,"Lose grip, roll DEX or less on d20 or drop weapon. Action plus DC 12 DEX check to pick up. "
+73,"Lose grip, drop weapon. Action plus DC 12 DEX check to pick up. "
+74,"Shield or arm tangled with enemy, roll STR or less or no attack next turn. Enemy gets advantage on next attack or can choose to auto grapple  with free head butt attack. If ranged weapon, confused (as spell) for one turn. Reroll 9-10 on confusion chart.   "
+75,"Shield or arm tangled with enemy, neither attacks next turn. If ranged weapon, confused (as spell) for one turn. Reroll 9-10 on confusion chart.  "
+76,"Weapon or arm tangled with enemy, neither attacks next turn. If ranged weapon, confused (as spell) for one turn. Reroll 9-10 on confusion chart.  "
+77,"Weapon tangled with enemy, no attack next turn. Enemy gets advantage on next attack or can choose to auto grapple and restrain with head butt attack. "
+78,"Weapon knocked away, roll d8 for direction, d10 for distance in feet "
+79,Standard weapon breaks. Magic weapon is stuck/tangled. DC 16 DEX or Str check to free/untangle.  
+80,"Hit self, half damage."
+81,"Hit self, normal damage."
+82,"Hit self, double damage."
+83,"Hit friend, half damage."
+84,"Hit friend, normal damage."
+85,"Hit friend, double damage."
+86,"Critical hit, self"
+87,"Critical hit, friend"
+88,"Twist ankle, roll DEX or less each round or fall prone. Attack with disadvantage. Lasts until healed."
+89,"Distracted,  opponents'  next attack at +3. "
+90,"Distracted,  opponents'  next attacks at +5"
+91,"Blinded (blood, dust, helm, etc), roll DEX or less to fix, -4 until fixed"
+92,"Blinded as above, roll DEX or less to fix, -6 to hit untiI fixed"
+93,"Blinded as above, roll DEX or less to fix, no attacks until fixed"
+94,As a free action your opponent may immediately make one melee attack with advantage against you. 
+95,As a free action your opponent may immediately make one melee attack with advantage against you. 
+96,As a free action your opponent may immediately make one melee attack with advantage against you with a +5 to hit 
+97,"All adjacent allies of your target may immediately take an attack of opportunity against you. If no allies, target gets a free attack which automatically hits (no special attacks or spells)"
+98,"Roll twice, ignoring rolls of 98-00."
+99,"Roll twice, ignoring rolls of 98-00."
+100,"Roll thrice, ignoring rolls of 98-00."
