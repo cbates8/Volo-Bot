@@ -46,10 +46,11 @@ class Misc(Cog):
         Args:
             ctx (`Context`): Message context object from Discord
         """
-        random_meme = random.choice(os.listdir(MEME_DIR))  # choose a random file from the "memes" folder
+        meme_candidates = os.listdir(MEME_DIR)  # Get all files from the "memes" folder
+        random_meme = random.choice(meme_candidates)  # Choose a random file
         # If .DS_Store is selected at random, continue choosing until the selected file is NOT .DS_Store
         while random_meme == ".DS_Store":
-            random_meme = random.choice(os.listdir(MEME_DIR))
+            random_meme = random.choice(meme_candidates)
         await ctx.send(file=File(f"{MEME_DIR}/{random_meme}"))
 
     @command(name="ping", help="Ping Volobot")
