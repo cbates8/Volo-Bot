@@ -2,7 +2,6 @@
 
 import os
 import random
-from typing import Any
 
 from discord import Game, Message
 from discord.ext.commands import Bot, Cog, Context
@@ -37,7 +36,7 @@ class Event(Cog):
 
     @Cog.listener()
     async def on_message(self: "Event", message: Message) -> None:
-        """When seeing a message containing 'volo', bot will reply with a random quote from the list stored in volo_quotes
+        """When seeing a message containing 'volo', the bot will reply with a random quote
 
         Args:
             message (`Message`): A Message object from Discord
@@ -51,12 +50,12 @@ class Event(Cog):
             await message.channel.send(response)
 
     @Cog.listener()
-    async def on_command_error(self: "Event", ctx: Context, error: Any) -> None:
+    async def on_command_error(self: "Event", ctx: Context, error: Exception) -> None:
         """Send error messages to context in addition to logging
 
         Args:
             ctx (`Context`): Message context object from Discord
-            error (`Any`): The error encountered in the program. This will either be a UserInputError or some other error thrown by the program
+            error (`Exception`): The error encountered in the program. This will likely be a UserInputError (i.e. BadArgument), or some other unhandled error
         """
         LOGGER.exception(error, exc_info=error)
         embed = create_error_embed(error)
