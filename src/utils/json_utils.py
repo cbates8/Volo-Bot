@@ -1,19 +1,19 @@
 """JSON Utils"""
 
 import json
-from typing import Union
+from typing import Any, Union
 
 import aiofiles
 
 
-async def read_json_async(file_path: str) -> Union[list, dict]:
+async def read_json_async(file_path: str) -> dict[str, Any]:
     """Open and deserialize a JSON file to a Python object
 
     Args:
         file_path (`str`): Path to JSON file
 
     Returns:
-        `Union[list, dict]`: Deserialized JSON as a Python object
+        `dict`: Deserialized JSON as a Python object
     """
     async with aiofiles.open(file_path, mode="r", encoding="utf8") as jsonfile:
         raw_json = await jsonfile.read()
