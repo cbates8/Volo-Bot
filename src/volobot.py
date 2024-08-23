@@ -1,4 +1,4 @@
-"""Event and command definitions for VoloBot: The best D&D Discord bot in the multiverse!
+"""Bot setup for VoloBot: The best D&D Discord bot in the multiverse!
 Author: Casey Bates
 GitHub: https://github.com/cbates8/Volo-Bot
 """
