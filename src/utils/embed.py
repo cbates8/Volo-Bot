@@ -25,7 +25,6 @@ def dict_to_embed(title: str, content: dict) -> Embed:
             else:
                 formatted_values = value
             embed.add_field(name=key, value=formatted_values, inline=False)
-
     return embed
 
 
