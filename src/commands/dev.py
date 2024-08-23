@@ -27,12 +27,12 @@ class Dev(Cog):
 
     @command(name="load", hidden=True)
     @is_owner()
-    async def load_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
-        """Command which Loads a Module
+    async def load_cog(self: "Dev", ctx: Context, cog: str = parameter(description="Name of the cog to load (e.g. 'crit')")) -> None:
+        """Loads a cog
 
         Args:
             ctx (`Context`): Message context object from Discord
-            cog (`str`): Name of the cog to unload
+            cog (`str`): Name of the cog to load
         """
         path = get_cog_path(cog)
 
@@ -47,8 +47,8 @@ class Dev(Cog):
 
     @command(name="unload", hidden=True)
     @is_owner()
-    async def unload_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
-        """Command which Unloads a Module
+    async def unload_cog(self: "Dev", ctx: Context, cog: str = parameter(description="Name of the cog to unload (e.g. 'crit')")) -> None:
+        """Unloads a cog
 
         Args:
             ctx (`Context`): Message context object from Discord
@@ -67,12 +67,12 @@ class Dev(Cog):
 
     @command(name="reload", hidden=True)
     @is_owner()
-    async def reload_cog(self: "Dev", ctx: Context, *, cog: str) -> None:
-        """Command which Reloads a Module
+    async def reload_cog(self: "Dev", ctx: Context, cog: str = parameter(description="Name of the cog to reload (e.g. 'crit')")) -> None:
+        """Reloads a cog, and any imported Python modules
 
         Args:
             ctx (`Context`): Message context object from Discord
-            cog (`str`): Name of the cog to unload
+            cog (`str`): Name of the cog to reload
         """
         path = get_cog_path(cog)
 
@@ -96,6 +96,8 @@ class Dev(Cog):
         activity_name: str = parameter(description="Description of activity to be displayed"),
     ) -> None:
         """Set the bot's Discord activity status
+
+        TODO: Support emojis, custom activities
         await bot.change_presence(activity=discord.CustomActivity(name="Reading \'Volo\'s Guide to Monsters\'", emoji=None, type=discord.ActivityType.custom))
 
         Args:
