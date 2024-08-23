@@ -4,7 +4,7 @@ import importlib
 import os
 import sys
 
-from constants.paths import COG_PATH, CONSTANTS_DIR, UTILS_DIR
+from constants.paths import COG_DOTPATH, CONSTANTS_DIR, UTILS_DIR
 
 MODULES_TO_RELOAD = [UTILS_DIR, CONSTANTS_DIR]
 
@@ -19,7 +19,7 @@ def get_cog_path(cog: str) -> str:
     Returns:
         `str`: Dot path of a cog
     """
-    return COG_PATH.format(cog=cog.lower())
+    return COG_DOTPATH.format(cog=cog.lower())
 
 
 def get_modules() -> list[str]:
