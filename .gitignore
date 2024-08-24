@@ -4,5 +4,4 @@ __pycache__
 
 .env
 .vscode
-inventory.json
 todo.txt
