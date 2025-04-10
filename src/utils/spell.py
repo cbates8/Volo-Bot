@@ -2,12 +2,12 @@
 
 from typing import Union
 from urllib.error import HTTPError
-from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
 from discord import Embed
 
 from constants.paths import SPELLS_PATH
+from utils.ddb import SPELL_URL, get_ddb_page, get_ddb_statblock_value
 from utils.embed import dict_to_embed
 from utils.json_utils import read_json_async
 
@@ -29,22 +29,30 @@ ONLINE_SOURCES = ["all", "web"]
 VALID_SOURCES = ["all", "local", "web"]
 
 
-def get_statblock_value(item_name: str, parsed_html: BeautifulSoup) -> str:
-    """
-    Extract all text from a ddb-statblock-item
+def get_spell_name(parsed_html: BeautifulSoup) -> str:
+    """Extract teh spell name from the page title
 
     Args:
-        item_name (`str`): Name of the statblock-item to scrape
-        parsed_html (`BeautifulSoup`): HTML of the site containing the statblocks
+        parsed_html (`BeautifulSoup`): Spell page parsed HTML
 
     Returns:
-        `str`: Scraped text from ddb
+        `str`: Spell name
     """
-    # Identify the item containing the information we want
-    item = parsed_html.find("div", class_=f"ddb-statblock-item ddb-statblock-item-{item_name}")
+    # Get the name of the spell from the page title
+    return parsed_html.find("h1", class_="page-title").text
 
-    # Get all text containied in the value section of the statblock
-    return item.find("div", class_="ddb-statblock-item-value").get_text(";", True).split(";")[0]
+
+def get_spell_description(parsed_html: BeautifulSoup) -> str:
+    """Extract the spell description from the page content
+
+    Args:
+        parsed_html (`BeautifulSoup`): Spell page parsed HTML
+
+    Returns:
+        `str`: Spell description
+    """
+    # Get the spell description from the page content
+    return parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
 
 
 def get_spell_from_ddb(spell_name: str) -> Embed:
@@ -57,26 +65,19 @@ def get_spell_from_ddb(spell_name: str) -> Embed:
         `Embed`: Discord embed containing spell info
     """
     spell_name = spell_name.replace(" ", "-")
-    url = f"https://www.dndbeyond.com/spells/{spell_name}"
+    url = SPELL_URL.format(spell_name=spell_name)
+    parsed_html = get_ddb_page(url)
 
-    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    # Open the url and parse the HTML
-    with urlopen(req) as spell_page:
-        # Parse the site's HTML using the Beautiful Soup web-scraping library
-        parsed_html = BeautifulSoup(spell_page, "html.parser")
-
-    # Get the name of the spell from the page title
-    spell_name = parsed_html.find("h1", class_="page-title").text
-
-    # Get the spell description from the page content
-    spell_description = parsed_html.find("div", class_="more-info-content").get_text("\n\n", True)
+    # Extract basic spell information
+    spell_name = get_spell_name(parsed_html)
+    spell_description = get_spell_description(parsed_html)
 
     # Create a dict to store spell information. Will be turned into an Embed later
     spell_dict = {"description": spell_description}
 
     # Scrape each spell attribute and add to the dictionary
     for label, item in SPELL_ATTRIBUTES.items():
-        spell_dict[label] = get_statblock_value(item, parsed_html)
+        spell_dict[label] = get_ddb_statblock_value(item, parsed_html)
 
     # Add ddb page url to the dictonary
     spell_dict["Source"] = url
