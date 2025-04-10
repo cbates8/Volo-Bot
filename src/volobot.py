@@ -32,7 +32,7 @@ DESCRIPTION = """A Dungeons and Dragons bot based on Volothamp Geddarm.
 Capable of rolling dice, checking critical hit tables, and more!"""
 
 # Cogs the bot should start with
-INITIAL_EXTENSIONS = ["commands.event", "commands.crit", "commands.dev", "commands.inventory", "commands.misc", "commands.spell"]
+INITIAL_EXTENSIONS = ["commands.event", "commands.crit", "commands.dev", "commands.inventory", "commands.misc", "commands.spell", "commands.rule"]
 
 
 class VoloBot(Bot):
