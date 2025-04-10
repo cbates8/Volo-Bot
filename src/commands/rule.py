@@ -18,21 +18,22 @@ class Rule(Cog):
         self.bot = bot
 
     @command(name="rule", help="Search rule descriptions")
-    async def send_spell_description(
+    async def send_rule_description(
         self: "Rule",
         ctx: Context,
-        rule_name: str = parameter(description="The name of the rule to search for"),
+        rule_name: str = parameter(default=None, description="The name of the rule to search for"),
     ) -> None:
         """Search for a rule and return its description
 
         Args:
             ctx (`Context`): Message context object from Discord
-            rule_name (`str`): The name of the rule to search for
+            rule_name (`str`, optional): The name of the rule to search for. If ommitted, known rules will be listed. Defaults to `None`.
         """
         response = await get_rule(rule_name)
         if isinstance(response, Embed):
             await ctx.send(embed=response)
         else:
+            response = f"Could not find rule '{rule_name}' in your inventory."
             await ctx.send(response)
 
 

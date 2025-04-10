@@ -41,5 +41,6 @@ async def get_rule(rule: str = None) -> Optional[Embed]:
         return get_known_rules()
 
     # If an entry exists for this rule, create an embed
+    rule = rule.title()
     if entry := rulebook.get(rule):
         return dict_to_embed(rule, entry)
