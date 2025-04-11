@@ -20,7 +20,7 @@ def dict_to_embed(title: str, content: dict) -> Embed:
         elif key == "content" and isinstance(value, list):
             formatted_values = ""
             for line in value:
-                formatted_values += f"{line}\n    "
+                formatted_values += f"{line}\n\n"
             embed.description = formatted_values
         else:
             if isinstance(value, dict):
