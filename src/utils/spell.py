@@ -27,6 +27,7 @@ SPELL_ATTRIBUTES = {
 LOCAL_SOURCES = ["all", "local"]
 ONLINE_SOURCES = ["all", "web"]
 VALID_SOURCES = ["all", "local", "web"]
+MISSING_SPELL_TEXT = "**Error:** Cannot find spell '{spell_name}'"
 
 
 def get_spell_name(parsed_html: BeautifulSoup) -> str:
@@ -118,21 +119,22 @@ async def get_spell(spell_name: str, source: str = "all") -> Union[str, Embed]:
     if source not in VALID_SOURCES:
         return f"**Error:** Invalid Source '{source}'\nMust be one of: `{' | '.join(VALID_SOURCES)}`"
 
-    # Check for the spell locally
-    if source in LOCAL_SOURCES:
-        response = await get_spell_from_file(spell_name)
-        if source == "local":
-            response = f"**Error:** Cannot find spell locally '{spell_name}'"
-
-        # If we have a non-null response, we can return
-        # If not, source must be 'all' so we will go check ddb
-        if response:
-            return response
-
     # Check for the spell online (via ddb)
     if source in ONLINE_SOURCES:
         try:
             response = get_spell_from_ddb(spell_name)
         except HTTPError:
-            response = f"**Error:** Cannot find spell '{spell_name}'"
+            if source == "web":
+                response = MISSING_SPELL_TEXT.format(spell_name=spell_name)
+
+        # If we have a non-null response, we can return
+        # If not, source must be 'all' so we will check local file
+        if response:
+            return response
+
+    # Check for the spell locally
+    if source in LOCAL_SOURCES:
+        response = await get_spell_from_file(spell_name)
+        if not response:
+            response = MISSING_SPELL_TEXT.format(spell_name=spell_name)
         return response

@@ -22,7 +22,7 @@ class Spell(Cog):
         self: "Spell",
         ctx: Context,
         spell_name: str = parameter(description="The name of the spell to search for"),
-        source: str = parameter(default="all", description="Source to get spell info from ('local' | 'web' | 'all')"),
+        source: str = parameter(default="all", description="Source to get spell info from ('web' | 'local' | 'all')"),
     ) -> None:
         """Search for a spell and return its description
 
