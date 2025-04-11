@@ -9,7 +9,7 @@ from utils.embed import dict_to_embed
 from utils.json_utils import read_json_async
 
 
-async def get_known_rules(rulebook: dict) -> Embed:
+def get_known_rules(rulebook: dict) -> Embed:
     """Get list of known rules
 
     Args:
@@ -38,7 +38,7 @@ async def get_rule(rule: str = None) -> Optional[Embed]:
 
     # If no item specified, return list of known rules
     if not rule:
-        return get_known_rules()
+        return get_known_rules(rulebook)
 
     # If an entry exists for this rule, create an embed
     rule = rule.title()
