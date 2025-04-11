@@ -15,9 +15,9 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     """
     embed = Embed(title=title)
     for key, value in content.items():
-        if key == "description":
+        if key == "Description":
             embed.description = value
-        elif key == "content" and isinstance(value, list):
+        elif key == "Content" and isinstance(value, list):
             formatted_values = ""
             for line in value:
                 formatted_values += f"{line}\n\n"
