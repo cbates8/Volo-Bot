@@ -33,19 +33,21 @@ def dict_to_embed(title: str, content: dict) -> Embed:
     return embed
 
 
-def create_error_embed(error: Exception) -> Embed:
+def create_error_embed(error: Exception, multiline: bool = False) -> Embed:
     """Create a Discord Embed describing a Python Exception
 
     Args:
         error (`Exception`): An error encountered by the program
+        multiline (`bool`): If error text should be a single or multi-line codeblock
 
     Returns:
         `Embed`: A Discord embed object with a description of the error, as well as traceback
     """
     embed = Embed(title="I've encountered an error:")
+    val = f"```{error}```" if multiline else f"`{error}`"
     embed.add_field(
         name=type(error).__name__,
-        value=f"`{error}`",
+        value=val,
         inline=False,
     )
     return embed
