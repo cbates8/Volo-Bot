@@ -36,10 +36,11 @@ def get_modules() -> list[str]:
     """
     modules = list()
     for module in MODULES_TO_RELOAD:
-        for file in os.listdir(module):
-            if file.endswith(".py") and "__" not in file:
-                module_path = f"{module}.{file.split('.')[0]}"
-                modules.append(module_path)
+        for dirpath, _, filenames in os.walk(module):
+            for file in filenames:
+                if file.endswith(".py") and "__" not in file:
+                    module_path = f"{dirpath.replace('/', '.')}.{file.split('.')[0]}"
+                    modules.append(module_path)
     return modules
 
 
