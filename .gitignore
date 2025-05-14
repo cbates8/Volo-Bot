@@ -1,7 +1,11 @@
+# System
 .DS_Store
+
+# Development
 __pycache__
 .venv
-
-.env
 .vscode
 todo.txt
+
+# Env
+.env
