@@ -35,6 +35,7 @@ NPC_HP_CONFIG = {
     "Healthy": {"display": HEALTHY, "format_wrapper": NORMAL_WRAPPER},
     "Bloodied": {"display": BLOODIED, "format_wrapper": RED_WRAPPER},
     "Dead": {"display": DEAD, "format_wrapper": GREY_WRAPPER},
+    None: {"display": "", "format_wrapper": NORMAL_WRAPPER},
 }
 NPC_STRING = "{name} {hp} {conditions}"
 
