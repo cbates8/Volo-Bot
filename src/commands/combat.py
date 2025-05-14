@@ -40,7 +40,8 @@ class Combat(Cog):
             return
         """
         try:
-            combat_args = get_combat_args(*args)
+            no_em_dash = [arg.replace("—", "--") for arg in args]
+            combat_args = get_combat_args(*no_em_dash)
         except (ArgParseError, argparse.ArgumentError, argparse.ArgumentTypeError) as error:
             LOGGER.exception(error, exc_info=error)
             embed = create_error_embed(error, multiline=True)
