@@ -34,6 +34,9 @@ class CombatArgs(argparse.Namespace):
     b: bool  # Bloodied
     d: bool  # Dead
 
+    ## Heal/Dmg ##
+    amount: int
+
 
 # Parse `combat` command arguments
 def get_combat_args(*args: tuple) -> CombatArgs:  # noqa: PLR0915
@@ -111,6 +114,16 @@ def get_combat_args(*args: tuple) -> CombatArgs:  # noqa: PLR0915
     # Create `rm` subcommand
     parser_rm = subparsers.add_parser("rm")
     parser_rm.add_argument("name", type=str)
+
+    # Create `heal` subcommand
+    parser_heal = subparsers.add_parser("heal")
+    parser_heal.add_argument("name", type=str)
+    parser_heal.add_argument("amount", type=int)
+
+    # Create `dmg` subcommand
+    parser_dmg = subparsers.add_parser("dmg")
+    parser_dmg.add_argument("name", type=str)
+    parser_dmg.add_argument("amount", type=int)
 
     # Parse Args
     # Catch SystemExit because ArgParse keeps trying to kill the program
