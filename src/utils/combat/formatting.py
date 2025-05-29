@@ -28,9 +28,9 @@ PC_STRING = "{name} {hp} {ac} {conditions}"
 
 ## Monster/NPC Combat Indicator ##
 # - Bugbear <Bloodied> (Frightened - 1 turn)
-HEALTHY = "<Healthy>"
-BLOODIED = "<Bloodied>"
-DEAD = "<Dead>"
+HEALTHY = "<😁>"
+BLOODIED = "<🥵>"
+DEAD = "<💀>"
 NPC_HP_CONFIG = {
     "Healthy": {"display": HEALTHY, "format_wrapper": NORMAL_WRAPPER},
     "Bloodied": {"display": BLOODIED, "format_wrapper": RED_WRAPPER},
