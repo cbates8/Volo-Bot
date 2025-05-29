@@ -11,6 +11,7 @@ from utils.combat.character import (
     load_character_from_args,
     load_character_from_file,
     update_character_from_args,
+    update_pc,
 )
 from utils.combat.formatting import get_combat_embed
 from utils.json_utils import read_json_async, write_json_async
@@ -194,7 +195,7 @@ class CombatClient:
         await self.__save_combat__()
 
     async def update(self: "CombatClient", char_dict: dict) -> str:
-        """Update and existing character (PC or NPC)
+        """Update an existing character (PC or NPC)
 
         Args:
             char_dict (`dict`): Dict of character data
@@ -249,3 +250,55 @@ class CombatClient:
         # Save to file
         await self.__save_combat__()
         return f"Removed character `{name}`"
+
+    async def heal(self: "CombatClient", name: str, amount: int) -> str:
+        """Heal an existing character (PC only)
+
+        Args:
+            amount (`int`): Amount to heal character
+
+        Returns:
+            `str`: Response to send to context
+        """
+        # Load combat
+        await self.__load_combat__()
+
+        response = f"Could not find character `{name}`"
+
+        # Get character by name (TODO: support character ID)
+        for character in self.combat_data:
+            if character.name.lower() == name.lower():
+                new_hp = character.hp.current + amount
+                update_pc(character, "chp", new_hp)
+                response = f"Updated character `{name}` - HP: {new_hp}"
+                break
+
+        # Save to file
+        await self.__save_combat__()
+        return response
+
+    async def dmg(self: "CombatClient", name: str, amount: int) -> str:
+        """Damage an existing character (PC only)
+
+        Args:
+            amount (`int`): Amount to heal character
+
+        Returns:
+            `str`: Response to send to context
+        """
+        # Load combat
+        await self.__load_combat__()
+
+        response = f"Could not find character `{name}`"
+
+        # Get character by name (TODO: support character ID)
+        for character in self.combat_data:
+            if character.name.lower() == name.lower():
+                new_hp = character.hp.current - amount
+                update_pc(character, "chp", new_hp)
+                response = f"Updated character `{name}` - HP: {new_hp}"
+                break
+
+        # Save to file
+        await self.__save_combat__()
+        return response
