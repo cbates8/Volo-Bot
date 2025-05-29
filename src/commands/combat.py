@@ -77,7 +77,7 @@ async def load_combat(
         await ctx.send(response)
 
 
-async def clear_combat(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:  # noqa: ARG001
+async def clear_combat(ctx: Context, combat_client: CombatClient, _) -> None:
     """Clear combat encounter
 
     Args:
@@ -106,7 +106,7 @@ async def show_combat(ctx: Context, combat_client: CombatClient, combat_args: Co
         await ctx.send(response)
 
 
-async def list_encounters(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:  # noqa: ARG001
+async def list_encounters(ctx: Context, combat_client: CombatClient, _) -> None:
     """List the saved combat encounters.
 
     Args:
