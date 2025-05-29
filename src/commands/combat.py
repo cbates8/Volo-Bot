@@ -15,79 +15,24 @@ from utils.logging import get_logger
 LOGGER = get_logger(os.path.basename(__file__))
 
 
-class Combat(Cog):
-    """Cog defining commands related to combat"""
-
-    def __init__(self: "Combat", bot: Bot) -> None:
-        """Init Cog
-
-        Args:
-            bot (`Bot`): Discord Bot object
-        """
-        self.bot = bot
-
-    @command(name="combat", help="Handle combat related tasks")
-    async def handle_combat(self: "Combat", ctx: Context, *args) -> None:  # noqa: C901, PLR0912
-        """Begin a new combat encounter, or load a saved encounter
-
-        Args:
-            ctx (`Context`): Message context object from Discord
-        """
-        """
-        if not args or args[0] not in SUB_COMMANDS:
-            response = f"Please specify a valid subcommand. Options: {SUB_COMMANDS}"
-            await ctx.send(response)
-            return
-        """
-        try:
-            no_em_dash = [arg.replace("—", "--") for arg in args]
-            combat_args = get_combat_args(*no_em_dash)
-        except (ArgParseError, argparse.ArgumentError, argparse.ArgumentTypeError) as error:
-            LOGGER.exception(error, exc_info=error)
-            embed = create_error_embed(error, multiline=True)
-            await ctx.send(embed=embed)
-            return
-
-        combat_client = CombatClient()
-
-        if combat_args.sub_command == "begin":
-            await begin_combat(ctx, combat_client, combat_args.combat_id)
-        elif combat_args.sub_command == "save":
-            await save_combat(ctx, combat_client, combat_args.combat_id)
-        elif combat_args.sub_command == "load":
-            await load_combat(ctx, combat_client, combat_args.combat_id)
-        elif combat_args.sub_command == "clear":
-            await clear_combat(ctx, combat_client)
-        elif combat_args.sub_command == "show":
-            await show_combat(ctx, combat_client, combat_args)
-        elif combat_args.sub_command == "list":
-            await list_encounters(ctx, combat_client)
-        elif combat_args.sub_command == "add":
-            await add_character(ctx, combat_client, combat_args)
-        elif combat_args.sub_command == "madd":
-            await add_monster(ctx, combat_client, combat_args)
-        elif combat_args.sub_command == "update":
-            await update_character(ctx, combat_client, combat_args)
-        elif combat_args.sub_command == "rm":
-            await remove_character(ctx, combat_client, combat_args)
-        else:
-            response = "should not have gotten here...."
-            await ctx.send(response)
+######################
+## COMBAT FUNCTIONS ##
+######################
 
 
 async def begin_combat(
     ctx: Context,
     combat_client: CombatClient,
-    combat_id: str = None,
+    combat_args: CombatArgs,
 ) -> None:
     """Begin a new combat encounter, or load a saved encounter
 
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
-        combat_id (`str`, optional): ID of combat to load. If ommitted, a new encounter will be started. Defaults to `None`.
+        combat_args (`CombatArgs`): Command arguments with ID of combat to load. If ommitted, a new encounter will be started.
     """
-    response = await combat_client.begin(combat_id)
+    response = await combat_client.begin(combat_args.combat_id)
     if isinstance(response, Embed):
         await ctx.send(embed=response)
     else:
@@ -98,16 +43,16 @@ async def begin_combat(
 async def save_combat(
     ctx: Context,
     combat_client: CombatClient,
-    combat_id: str,
+    combat_args: CombatArgs,
 ) -> None:
     """Save current combat encounter
 
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
-        combat_id (`str`): ID of combat to save
+        combat_args (`CombatArgs`): Command arguments with ID of combat to save
     """
-    combat_path = await combat_client.save(combat_id)
+    combat_path = await combat_client.save(combat_args.combat_id)
     response = f"Saved combat to `{combat_path}`"
     await ctx.send(response)
 
@@ -115,16 +60,16 @@ async def save_combat(
 async def load_combat(
     ctx: Context,
     combat_client: CombatClient,
-    combat_id: str = None,
+    combat_args: CombatArgs,
 ) -> None:
     """Load a saved combat encounter
 
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
-        combat_id (`str`, optional): ID of combat to load. If ommitted, saved encounters will be listed. Defaults to `None`.
+        combat_args (`CombatArgs`): Command arguments with ID of combat to load. If ommitted, saved encounters will be listed.
     """
-    response = await combat_client.load(combat_id)
+    response = await combat_client.load(combat_args.combat_id)
     if isinstance(response, Embed):
         await ctx.send(embed=response)
     else:
@@ -132,15 +77,13 @@ async def load_combat(
         await ctx.send(response)
 
 
-async def clear_combat(
-    ctx: Context,
-    combat_client: CombatClient,
-) -> None:
+async def clear_combat(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:  # noqa: ARG001
     """Clear combat encounter
 
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
+        combat_args (`CombatArgs`): Command arguments
     """
     await combat_client.clear()
     response = "Cleared currrent combat"
@@ -153,6 +96,7 @@ async def show_combat(ctx: Context, combat_client: CombatClient, combat_args: Co
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
+        combat_args (`CombatArgs`): Command arguments
     """
     response = await combat_client.show(combat_args.as_text)
     if isinstance(response, Embed):
@@ -162,15 +106,13 @@ async def show_combat(ctx: Context, combat_client: CombatClient, combat_args: Co
         await ctx.send(response)
 
 
-async def list_encounters(
-    ctx: Context,
-    combat_client: CombatClient,
-) -> None:
+async def list_encounters(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:  # noqa: ARG001
     """List the saved combat encounters.
 
     Args:
         ctx (`Context`): Message context object from Discord
         combat_client (`CombatClient`): Combat client
+        combat_args (`CombatArgs`): Command arguments
     """
     response = combat_client.list()
     if isinstance(response, Embed):
@@ -237,6 +179,91 @@ async def remove_character(ctx: Context, combat_client: CombatClient, combat_arg
     """
     response = await combat_client.remove(combat_args.name)
     await ctx.send(response)
+
+
+async def heal_character(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:
+    """Heal a character
+
+    Args:
+        ctx (`Context`): Message context object from Discord
+        combat_client (`CombatClient`): Combat client
+        combat_args (`CombatArgs`): Command arguments with character data
+    """
+    response = await combat_client.heal(combat_args.name, combat_args.amount)
+    await ctx.send(response)
+
+
+async def damage_character(ctx: Context, combat_client: CombatClient, combat_args: CombatArgs) -> None:
+    """Heal a character
+
+    Args:
+        ctx (`Context`): Message context object from Discord
+        combat_client (`CombatClient`): Combat client
+        combat_args (`CombatArgs`): Command arguments with character data
+    """
+    response = await combat_client.dmg(combat_args.name, combat_args.amount)
+    await ctx.send(response)
+
+
+###############
+## COG SETUP ##
+###############
+
+COMBAT_COMMAND_CALLABLE_MAP = {
+    "begin": begin_combat,
+    "save": save_combat,
+    "load": load_combat,
+    "clear": clear_combat,
+    "show": show_combat,
+    "list": list_encounters,
+    "add": add_character,
+    "madd": add_monster,
+    "update": update_character,
+    "rm": remove_character,
+    "heal": heal_character,
+    "dmg": damage_character,
+}
+
+
+class Combat(Cog):
+    """Cog defining commands related to combat"""
+
+    def __init__(self: "Combat", bot: Bot) -> None:
+        """Init Cog
+
+        Args:
+            bot (`Bot`): Discord Bot object
+        """
+        self.bot = bot
+
+    @command(name="combat", help="Handle combat related tasks")
+    async def handle_combat(self: "Combat", ctx: Context, *args) -> None:
+        """Begin a new combat encounter, or load a saved encounter
+
+        Args:
+            ctx (`Context`): Message context object from Discord
+        """
+        try:
+            no_em_dash = [arg.replace("—", "--") for arg in args]
+            combat_args = get_combat_args(*no_em_dash)
+        except (ArgParseError, argparse.ArgumentError, argparse.ArgumentTypeError) as error:
+            LOGGER.exception(error, exc_info=error)
+            embed = create_error_embed(error, multiline=True)
+            await ctx.send(embed=embed)
+            return
+
+        try:
+            command_callable = COMBAT_COMMAND_CALLABLE_MAP[combat_args.sub_command]
+        except KeyError as error:
+            response = "should not have gotten here...."
+            await ctx.send(response)
+            LOGGER.exception(error, exc_info=error)
+            embed = create_error_embed(error)
+            await ctx.send(embed=embed)
+            return
+
+        combat_client = CombatClient()
+        await command_callable(ctx, combat_client, combat_args)
 
 
 async def setup(bot: Bot) -> None:
