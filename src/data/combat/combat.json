@@ -2,7 +2,7 @@
     {
         "name": "Nibis",
         "hp": {
-            "current": 12,
+            "current": 30,
             "max": 30,
             "temp": null,
             "hint": null
@@ -21,7 +21,7 @@
     {
         "name": "Gex",
         "hp": {
-            "current": 6,
+            "current": 20,
             "max": 20,
             "temp": null,
             "hint": null
@@ -40,7 +40,7 @@
     {
         "name": "Vyranor",
         "hp": {
-            "current": 6,
+            "current": 24,
             "max": 24,
             "temp": null,
             "hint": null
@@ -59,7 +59,7 @@
     {
         "name": "Irmgard",
         "hp": {
-            "current": 27,
+            "current": 31,
             "max": 31,
             "temp": null,
             "hint": null
@@ -78,7 +78,7 @@
     {
         "name": "Ailouras",
         "hp": {
-            "current": 12,
+            "current": 27,
             "max": 27,
             "temp": null,
             "hint": null
