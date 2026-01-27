@@ -1,0 +1,154 @@
+[
+    {
+        "name": "Nibis",
+        "hp": {
+            "current": 8,
+            "max": 22,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 10,
+        "ac": 18
+    },
+    {
+        "name": "Gex",
+        "hp": {
+            "current": -4,
+            "max": 14,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 1,
+        "ac": 16
+    },
+    {
+        "name": "Vyranor",
+        "hp": {
+            "current": 12,
+            "max": 17,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 19,
+        "ac": 16
+    },
+    {
+        "name": "Bug",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Dead"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 20,
+        "ac": null
+    },
+    {
+        "name": "Irmgard",
+        "hp": {
+            "current": 15,
+            "max": 22,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 12,
+        "ac": 18
+    },
+    {
+        "name": "Armor",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Healthy"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 1,
+        "ac": null
+    },
+    {
+        "name": "Ailouras",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 12,
+        "ac": 14
+    },
+    {
+        "name": "Aerion",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 15,
+        "ac": 15
+    }
+]

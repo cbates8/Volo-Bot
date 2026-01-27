@@ -13,34 +13,34 @@ WORK_DIR ?= $(shell pwd)
 ##################
 
 down:
-	@docker-compose down ${APP}
+	@docker compose down ${APP}
 
 up:
-	@docker-compose up -d ${APP}
+	@docker compose up -d ${APP}
 
 bounce: down up
 
 stop:
-	@docker-compose stop ${APP}
+	@docker compose stop ${APP}
 
 start:
-	@docker-compose start ${APP}
+	@docker compose start ${APP}
 
 restart:
-	@docker-compose restart ${APP}
+	@docker compose restart ${APP}
 
 build:
-	@docker-compose build ${APP}
+	@docker compose build ${APP}
 
 rebuild: down build up
 
 build-nc:
-	@docker-compose build ${APP} --no-cache
+	@docker compose build ${APP} --no-cache
 
 rebuild-nc: down build-nc up
 
 logs:
-	@docker-compose logs volobot
+	@docker compose logs volobot
 
 
 #################

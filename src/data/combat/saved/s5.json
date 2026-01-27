@@ -1,0 +1,249 @@
+[
+    {
+        "name": "Nibis",
+        "hp": {
+            "current": 6,
+            "max": 30,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 20,
+        "ac": 18
+    },
+    {
+        "name": "Gex",
+        "hp": {
+            "current": 11,
+            "max": 20,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 13,
+        "ac": 16
+    },
+    {
+        "name": "Vyranor",
+        "hp": {
+            "current": 24,
+            "max": 24,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 6,
+        "ac": 14
+    },
+    {
+        "name": "Irmgard",
+        "hp": {
+            "current": 31,
+            "max": 31,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 6,
+        "ac": 18
+    },
+    {
+        "name": "Ailouras",
+        "hp": {
+            "current": 27,
+            "max": 27,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 8,
+        "ac": 14
+    },
+    {
+        "name": "Aerion",
+        "hp": {
+            "current": 3,
+            "max": 21,
+            "temp": null,
+            "hint": null
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "pc",
+        "id": null,
+        "initiative": 19,
+        "ac": 15
+    },
+    {
+        "name": "Guard5",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Dead"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 15,
+        "ac": null
+    },
+    {
+        "name": "Guard6",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Healthy"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 1,
+        "ac": null
+    },
+    {
+        "name": "Soldier3",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Healthy"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 9,
+        "ac": null
+    },
+    {
+        "name": "Soldier4",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Dead"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 15,
+        "ac": null
+    },
+    {
+        "name": "Elf",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Dead"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 4,
+        "ac": null
+    },
+    {
+        "name": "Guard3",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Dead"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 17,
+        "ac": null
+    },
+    {
+        "name": "Tholim",
+        "hp": {
+            "current": null,
+            "max": null,
+            "temp": null,
+            "hint": "Bloodied"
+        },
+        "conditions": [
+            {
+                "name": null,
+                "duration": null
+            }
+        ],
+        "type": "npc",
+        "id": null,
+        "initiative": 12,
+        "ac": null
+    }
+]
