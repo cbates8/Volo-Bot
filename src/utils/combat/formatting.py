@@ -71,7 +71,7 @@ def format_ac(ac: int) -> str:
     Returns:
         `str`: Formatted AC string
     """
-    char_ac = ac if ac else "??"
+    char_ac = ac if ac is not None else "??"
     return AC_STRING.format(ac=char_ac)
 
 
@@ -84,8 +84,8 @@ def format_pc_hp(hp: HitPoints) -> str:
     Returns:
         `str`: Formatted HP string
     """
-    current_hp = hp.current if hp.current else "??"
-    max_hp = hp.max if hp.max else "??"
+    current_hp = hp.current if hp.current is not None else "??"
+    max_hp = hp.max if hp.max is not None else "??"
     return HP_STRING.format(current=current_hp, max=max_hp)
 
 
