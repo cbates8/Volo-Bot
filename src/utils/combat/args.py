@@ -27,7 +27,9 @@ class CombatArgs(argparse.Namespace):
     ## PC ##
     chp: int  # Current HP
     mhp: int  # Max HP
+    thp: int  # Temp HP
     ac: int  # Armor Class
+    tac: int  # Temp Armor Class
 
     ## NPC ##
     h: bool  # Healthy
@@ -83,7 +85,9 @@ def get_combat_args(*args: tuple) -> CombatArgs:  # noqa: PLR0915
     parser_add.add_argument("--cd", type=str, default=None)
     parser_add.add_argument("--chp", type=int, default=None)
     parser_add.add_argument("--mhp", type=int, default=None)
+    parser_add.add_argument("--thp", type=int, default=None)
     parser_add.add_argument("--ac", type=int, default=None)
+    parser_add.add_argument("--tac", type=int, default=None)
 
     # Create `madd` subcommand
     parser_madd = subparsers.add_parser("madd")
@@ -106,7 +110,9 @@ def get_combat_args(*args: tuple) -> CombatArgs:  # noqa: PLR0915
     parser_update.add_argument("--cd", type=none_or_str)
     parser_update.add_argument("--chp", type=none_or_int)
     parser_update.add_argument("--mhp", type=none_or_int)
+    parser_update.add_argument("--thp", type=none_or_int)
     parser_update.add_argument("--ac", type=none_or_int)
+    parser_update.add_argument("--tac", type=none_or_int)
     parser_update.add_argument("--h", action="store_true")
     parser_update.add_argument("--b", action="store_true")
     parser_update.add_argument("--d", action="store_true")
