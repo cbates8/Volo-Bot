@@ -16,7 +16,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pyright>=1.1.411",
+    "basedpyright>=1.39.10",
 ]
 
 
@@ -44,7 +44,3 @@ select = [
 ignore = [
     "N999"
 ]
-
-[tool.pyright]
-venvPath = "."
-venv = ".venv"

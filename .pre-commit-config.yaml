@@ -18,8 +18,7 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
-  # https://github.com/microsoft/pyright/blob/main/docs/ci-integration.md#running-pyright-as-a-pre-commit-hook
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.411
+  - repo: https://github.com/DetachHead/basedpyright-prek-mirror
+    rev: 1.39.10
     hooks:
-    - id: pyright
+      - id: basedpyright

@@ -38,7 +38,7 @@ tasks:
     sources:
       - src/**/*.py
       - tests/**/*.py
-    cmd: uv run pyright {{.CLI_ARGS}}
+    cmd: uv run basedpyright {{.CLI_ARGS}}
 
   healthy:
     desc: Check code health by linting, formatting, and typechecking
