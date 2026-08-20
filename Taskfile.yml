@@ -2,118 +2,16 @@
 
 version: '3'
 
-tasks:
+includes:
 
-  ## Development Tasks ##
+  docker:
+      taskfile: ./tasks/DockerTasks.yml
+      flatten: false
 
-  install:
-    desc: Install project dependencies
-    sources:
-      - pyproject.toml
-      - uv.lock
-    generates:
-      - .venv/pyvenv.cfg
-    cmd: uv sync --dev
-    silent: true
+  local:
+      taskfile: ./tasks/LocalTasks.yml
+      flatten: false
 
-  lint:
-    desc: Lint the codebase
-    sources:
-      - src/**/*.py
-      - tests/**/*.py
-      - pyproject.toml
-    cmd: uvx ruff check {{.CLI_ARGS}}
-
-  format:
-    desc: Format the codebase
-    sources:
-      - src/**/*.py
-      - tests/**/*.py
-      - pyproject.toml
-    cmd: uvx ruff format {{.CLI_ARGS}}
-
-  typecheck:
-    desc: Typecheck the codebase
-    deps: [install]
-    sources:
-      - src/**/*.py
-      - tests/**/*.py
-    cmd: uv run basedpyright {{.CLI_ARGS}}
-
-  healthy:
-    desc: Check code health by linting, formatting, and typechecking
-    sources:
-      - src/**/*.py
-      - tests/**/*.py
-    cmds:
-      - task: lint
-      - task: format
-      - task: typecheck
-
-  pre-commit-install:
-    desc: Install pre-commit hooks
-    deps: [install]
-    cmds:
-      # pre-commit-uv patches pre-commit to use uv to install Python-based tools, drastically increasing speed https://github.com/tox-dev/pre-commit-uv
-      - uv tool install pre-commit --with pre-commit-uv
-      - uvx pre-commit install --install-hooks
-
-  pre-commit-update:
-    desc: Update pre-commit hooks
-    deps: [install]
-    cmds:
-      - uvx pre-commit autoupdate
-
-  ## Docker Tasks ##
-
-  down:
-    desc: Stop and remove container
-    cmd: docker compose down {{.CLI_ARGS}}
-
-  up:
-    desc: Create and start container
-    cmd: docker compose up -d {{.CLI_ARGS}}
-
-  bounce:
-    desc: Stop then start container
-    cmds:
-      - task: down
-      - task: up
-
-  stop:
-    desc: Stop container
-    cmd: docker compose stop {{.CLI_ARGS}}
-
-  start:
-    desc: Start container
-    cmd: docker compose start {{.CLI_ARGS}}
-
-  restart:
-    desc: Restart container
-    cmd: docker compose restart {{.CLI_ARGS}}
-
-  build:
-    desc: Build container
-    cmd: docker compose build {{.CLI_ARGS}}
-
-  rebuild:
-    desc: Remove, build, and start container
-    cmds:
-      - task: down
-      - task: build
-      - task: up
-
-  build-nc:
-    desc: Build container (no cache)
-    cmd: docker compose build {{.CLI_ARGS}} --no-cache
-
-  rebuild-nc:
-    desc: Remove, build (no cache), and start container
-    cmds:
-      - task: down
-      - task: build-nc
-      - task: up
-
-  logs:
-    desc: View container logs
-    cmd: docker compose logs volobot
+  pre-commit:
+      taskfile: ./tasks/PreCommitTasks.yml
+      flatten: false
