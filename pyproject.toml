@@ -44,3 +44,7 @@ select = [
 ignore = [
     "N999"
 ]
+
+[tool.basedpyright]
+reportMissingTypeStubs = false
+reportImplicitRelativeImport = false
