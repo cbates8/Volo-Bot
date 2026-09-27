@@ -211,7 +211,7 @@ def get_text_combat(data: dict) -> Embed:
         if initiative:
             body = f"{initiative} "
             for i, c in enumerate(characters):
-                body += f"{(' ' * (2 - len(str(initiative)))) if i == 0 else (' '*3)}{format_character(c)}\n"
+                body += f"{(' ' * (2 - len(str(initiative)))) if i == 0 else (' ' * 3)}{format_character(c)}\n"
         # Otherwise, list characters without initiative at the end
         else:
             body = f"{initiative}\n"
