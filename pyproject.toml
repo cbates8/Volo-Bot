@@ -48,3 +48,9 @@ ignore = [
 [tool.basedpyright]
 reportMissingTypeStubs = false
 reportImplicitRelativeImport = false
+reportUnusedCallResult = false
+# reportAny = false # TODO: disable?
+ignore = [
+    "src/utils/combat/character.py", # tmp ignore because I'm going to re-write this anyway
+    "src/utils/combat/args.py" # ditto
+]
