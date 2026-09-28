@@ -6,7 +6,7 @@ from typing import Any
 import aiofiles
 
 
-async def read_json_async(file_path: str) -> list[Any] | dict[str, Any]:  # pyright: ignore[reportExplicitAny]
+async def read_json_async(file_path: str) -> Any:  # pyright: ignore[reportExplicitAny]
     """Open and deserialize a JSON file to a Python object
 
     Args:
@@ -17,11 +17,11 @@ async def read_json_async(file_path: str) -> list[Any] | dict[str, Any]:  # pyri
     """
     async with aiofiles.open(file_path, mode="r", encoding="utf8") as jsonfile:
         raw_json = await jsonfile.read()
-    deserialized_json = json.loads(raw_json)  # pyright: ignore[reportAny]
-    return deserialized_json  # pyright: ignore[reportAny]
+    deserialized_json = json.loads(raw_json)
+    return deserialized_json
 
 
-async def write_json_async(file_path: str, content: list[Any] | dict[str, Any]) -> None:  # pyright: ignore[reportExplicitAny]
+async def write_json_async(file_path: str, content: Any) -> None:  # pyright: ignore[reportExplicitAny]
     """Serialize a Python object to a JSON string and write to a file
 
     Args:

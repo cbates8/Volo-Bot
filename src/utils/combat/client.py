@@ -59,9 +59,7 @@ class CombatClient:
         """
         combat_path = get_combat_path(combat_id)
         raw_combat_data = await read_json_async(combat_path)
-        # TODO: placeholder ignore for basedpyright
-        # Will remove this once I've implemented combat schema validation
-        self.combat_data = [load_character_from_file(c) for c in raw_combat_data]  # pyright: ignore[reportArgumentType]
+        self.combat_data = [load_character_from_file(c) for c in raw_combat_data]
 
     async def __save_combat__(self: "CombatClient", combat_id: str | None = None) -> None:
         """Save combat data to a file

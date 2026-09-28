@@ -50,7 +50,7 @@ reportMissingTypeStubs = false
 reportImplicitRelativeImport = false
 reportUnusedCallResult = false
 reportCallInDefaultInitializer = false
-# reportAny = false # TODO: disable?
+reportAny = false
 ignore = [
     "src/utils/combat/character.py", # tmp ignore because I'm going to re-write this anyway
     "src/utils/combat/args.py" # ditto
