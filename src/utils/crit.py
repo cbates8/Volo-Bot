@@ -1,7 +1,5 @@
 """Critical Hit/Miss Utils"""
 
-from typing import Union
-
 import aiofiles
 from aiocsv import AsyncDictReader
 
@@ -21,7 +19,7 @@ def validate_crit_percentage(input_percentage: int) -> bool:
     return input_percentage in range(1, 101)
 
 
-def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, bool]:
+def validate_damage_type(valid_types: list[str], input_type: str) -> str | bool:
     """Validate user input damage type
 
     Args:
@@ -40,7 +38,7 @@ def validate_damage_type(valid_types: list[str], input_type: str) -> Union[str, 
     return False
 
 
-async def read_crit_csv_async(path: str) -> tuple[list[str], dict[int, dict]]:
+async def read_crit_csv_async(path: str) -> tuple[list[str], dict[int, dict[str, str]]]:
     """Read from CSV representing a critical hit/miss table
 
     Result will look like the following:
@@ -83,7 +81,7 @@ async def get_crit_result(crit_percentage: int, dmg_type: str) -> str:
     if validate_crit_percentage(crit_percentage):
         valid_dmg_types, crit_table = await read_crit_csv_async(CRIT_TABLE_PATH)
         if clean_dmg_type := validate_damage_type(valid_dmg_types, dmg_type):
-            response = crit_table[crit_percentage][clean_dmg_type]
+            response = crit_table[crit_percentage][clean_dmg_type]  # pyright: ignore[reportArgumentType]
         else:
             # using chr(10) as newline, because f-string doesn't support \n in expression part
             response = f"**Error:** Invalid Damage Type\nSupported types: ```\n{chr(10).join(valid_dmg_types)}```"
