@@ -1,7 +1,5 @@
 """Inventory Management Utils"""
 
-from typing import Optional
-
 from discord import Embed
 
 from constants.paths import INVENTORY_PATH
@@ -9,17 +7,17 @@ from utils.embed import dict_to_embed
 from utils.json_utils import read_json_async, write_json_async
 
 
-async def get_item(item: str = None) -> Optional[Embed]:
+async def get_item(item: str | None = None) -> Embed | None:
     """Get content of the inventory.
 
     Return entry of the specified item.
     If no item provided, return content of full inventory
 
     Args:
-        item (`str`): The inventory item to list. Defaults to `None`.
+        item (`str`, optional): The inventory item to list. Defaults to `None`.
 
     Returns:
-        `Optional[Embed]`: Discord embed representing inventory content
+        `Embed` | `None`: Discord embed representing inventory content
     """
     inventory = await read_json_async(INVENTORY_PATH)
 
@@ -32,7 +30,7 @@ async def get_item(item: str = None) -> Optional[Embed]:
         return dict_to_embed(item, entry)
 
 
-async def store_item(item: str, quantity: int = 1, description: str = None) -> None:
+async def store_item(item: str, quantity: int = 1, description: str | None = None) -> None:
     """Store an item in inventory
 
     Args:
@@ -58,7 +56,7 @@ async def store_item(item: str, quantity: int = 1, description: str = None) -> N
     await write_json_async(INVENTORY_PATH, inventory)
 
 
-async def remove_item(item: str, quantity: int = None) -> None:
+async def remove_item(item: str, quantity: int | None = None) -> None:
     """Remove an item from inventory
 
     Args:

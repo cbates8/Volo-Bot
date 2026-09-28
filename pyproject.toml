@@ -1,0 +1,57 @@
+[project]
+name = "volo-bot"
+version = "2.0.0"
+description = "A D&D Discord bot"
+readme = "README.md"
+authors = [
+    { name = "cbates8", email = "cwbates8@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "aiocsv>=1.4.0",
+    "aiofiles>=25.1.0",
+    "beautifulsoup4>=4.14.3",
+    "discord-py>=2.6.4",
+]
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.39.10",
+]
+
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+select = [
+    "PL",
+    "A",
+    "ARG",
+    "ASYNC",
+    "E",
+    "F",
+    "B003",
+    "B006",
+    "B007",
+    "C901",
+    "N",
+    "PLR1711",
+    "PLR2004",
+    "RUF100",
+    "INP001"
+]
+ignore = [
+    "N999"
+]
+
+[tool.basedpyright]
+reportMissingTypeStubs = false
+reportImplicitRelativeImport = false
+reportUnusedCallResult = false
+reportCallInDefaultInitializer = false
+reportAny = false
+ignore = [
+    "src/utils/combat/character.py", # tmp ignore because I'm going to re-write this anyway
+    "src/utils/combat/args.py" # ditto
+]

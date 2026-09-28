@@ -2,9 +2,12 @@
 .DS_Store
 
 # Development
-__pycache__
-.venv
-.vscode
+__pycache__/
+.venv/
+.vscode/
+.task/
+.ruff_cache/
+uv.lock
 todo.txt
 
 # Env

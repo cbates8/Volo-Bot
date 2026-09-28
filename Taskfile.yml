@@ -1,0 +1,17 @@
+# https://taskfile.dev
+
+version: '3'
+
+includes:
+
+  docker:
+      taskfile: ./taskfiles/docker.taskfile.yml
+      flatten: false
+
+  local:
+      taskfile: ./taskfiles/local.taskfile.yml
+      flatten: false
+
+  pre-commit:
+      taskfile: ./taskfiles/pre_commit.taskfile.yml
+      flatten: false
