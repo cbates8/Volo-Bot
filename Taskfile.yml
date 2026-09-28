@@ -5,13 +5,13 @@ version: '3'
 includes:
 
   docker:
-      taskfile: ./tasks/DockerTasks.yml
+      taskfile: ./taskfiles/docker.taskfile.yml
       flatten: false
 
   local:
-      taskfile: ./tasks/LocalTasks.yml
+      taskfile: ./taskfiles/local.taskfile.yml
       flatten: false
 
   pre-commit:
-      taskfile: ./tasks/PreCommitTasks.yml
+      taskfile: ./taskfiles/pre_commit.taskfile.yml
       flatten: false
